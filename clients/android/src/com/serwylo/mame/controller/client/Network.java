@@ -6,25 +6,23 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class Server
-{
+import com.serwylo.mame.controller.shared.Event;
 
-	public static final String MSG_CLOSE = "Close";
-	public static final String MSG_BTN_DOWN = "BtnDown:%";
-	public static final String MSG_BTN_UP = "BtnUp:%";
+public class Network
+{
 
 	private Socket socket;
 	private PrintWriter output;
 	private BufferedReader input;
 	
-	private static Server instance = new Server();
+	private static Network instance = new Network();
 	
-	private Server()
+	private Network()
 	{
 		
 	}
 
-	public static Server getInstance()
+	public static Network getInstance()
 	{
 		return instance;
 	}
@@ -33,7 +31,7 @@ public class Server
 	{
 		try
 		{
-			this.socket = new Socket( "localhost", 8282 );
+			this.socket = new Socket( "192.168.1.7", 8282 );
 			this.output = new PrintWriter( this.socket.getOutputStream(), true );
 			this.input = new BufferedReader( new InputStreamReader( this.socket.getInputStream() ) );
 			return true;
@@ -46,17 +44,11 @@ public class Server
 		}
 	}
 	
-	private String generateButtonMessage( String message, Button.Type type )
+	public void sendEvent( Event event )
 	{
-		return message.replace( '%', type.toChar() );
-	}
-	
-	public void sendButton( Button.Type type )
-	{
-		String message = generateButtonMessage( MSG_BTN_DOWN, type );
-		this.output.write( message );
+		System.err.println( "Sending to server: '" + event.toString() + "'" );
+		this.output.write( event.toString() );
 		this.output.flush();
-		System.out.println( "Writing '" + message + "' to server" );
 	}
 	
 	public void close()
@@ -65,7 +57,7 @@ public class Server
 		{
 			if ( this.output != null )
 			{
-				this.output.write( MSG_CLOSE );
+				this.sendEvent( Event.createCloseEvent() );
 				this.output.close();
 			}
 			

@@ -1,0 +1,9 @@
+debug
+* spacing:30 padding:0 align:center
+[syncButton] width:400 height:80
+---
+[openControllerButton] width:400 height:80
+---
+[optionsButton] width:200 height:40
+---
+[quitButton] width:200 height:40

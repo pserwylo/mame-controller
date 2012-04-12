@@ -1,0 +1,7 @@
+debug
+* spacing:30 padding:0 align:center
+[statusLabel]
+---
+[searchAgainButton] width:300 height:60
+---
+[cancelButton] width:250 height:40

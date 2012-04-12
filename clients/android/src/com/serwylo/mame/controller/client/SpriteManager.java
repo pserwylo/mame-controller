@@ -2,9 +2,7 @@ package com.serwylo.mame.controller.client;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class SpriteManager 
 {
@@ -20,7 +18,7 @@ public class SpriteManager
 	{
 		if ( buttonSprites == null )
 		{
-			Texture buttonTexture = new Texture( Gdx.files.internal("assets/buttons.png" ) );
+			Texture buttonTexture = new Texture( Gdx.files.internal("buttons.png" ) );
 			Sprite[] buttons = new Sprite[4];
 			
 			Sprite buttonRed = new Sprite( buttonTexture, 0, 0, 128, 128 );
@@ -44,5 +42,5 @@ public class SpriteManager
 		
 		return buttonSprites;
 	}
-
+	
 }
