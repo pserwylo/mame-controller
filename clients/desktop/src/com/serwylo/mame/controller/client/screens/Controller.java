@@ -21,10 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
-import com.serwylo.mame.controller.client.ArcadeButton;
-import com.serwylo.mame.controller.client.ControllerLayout;
-import com.serwylo.mame.controller.client.MameControllerClient;
-import com.serwylo.mame.controller.client.SpriteManager;
+import com.serwylo.mame.controller.client.*;
 import com.serwylo.mame.controller.shared.Event;
 
 public class Controller implements Screen, ClickListener
@@ -69,7 +66,8 @@ public class Controller implements Screen, ClickListener
 	public void click( Actor actor, float x, float y )
 	{
 		ArcadeButton button = (ArcadeButton)actor;
-		MameControllerClient.bluetoothClient.send( Event.createKeyUp( button.getKeyCode() ) );
+		// MameControllerClient.bluetoothClient.send( Event.createKeyUp( button.getKeyCode() ) );
+		NetworkClient.getInstance().sendEvent( Event.createKeyUp( button.getKeyCode() ) );
 		// this.app.setScreen( MainMenu.getInstance( this.app ) );
 	}
 	

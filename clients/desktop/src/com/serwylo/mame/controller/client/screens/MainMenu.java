@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.serwylo.mame.controller.client.ControllerLayout;
 import com.serwylo.mame.controller.client.MameControllerClient;
+import com.serwylo.mame.controller.client.NetworkClient;
 
 public class MainMenu implements Screen, ClickListener
 {
@@ -59,7 +60,8 @@ public class MainMenu implements Screen, ClickListener
 		}
 		else if ( actor == this.syncButton )
 		{
-			this.app.setScreen( SyncScreen.getInstance( this.app ) );
+			NetworkClient.getInstance().open();
+			// this.app.setScreen( SyncScreen.getInstance( this.app ) );
 		}
 		else if ( actor == this.quitButton )
 		{

@@ -8,21 +8,21 @@ import java.net.Socket;
 
 import com.serwylo.mame.controller.shared.Event;
 
-public class Network
+public class NetworkClient
 {
 
 	private Socket socket;
 	private PrintWriter output;
 	private BufferedReader input;
 	
-	private static Network instance = new Network();
+	private static NetworkClient instance = new NetworkClient();
 	
-	private Network()
+	private NetworkClient()
 	{
 		
 	}
 
-	public static Network getInstance()
+	public static NetworkClient getInstance()
 	{
 		return instance;
 	}
@@ -31,7 +31,7 @@ public class Network
 	{
 		try
 		{
-			this.socket = new Socket( "192.168.1.7", 8282 );
+			this.socket = new Socket( "192.168.1.6", 8282 );
 			this.output = new PrintWriter( this.socket.getOutputStream(), true );
 			this.input = new BufferedReader( new InputStreamReader( this.socket.getInputStream() ) );
 			return true;
