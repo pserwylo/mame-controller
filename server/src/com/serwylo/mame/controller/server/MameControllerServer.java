@@ -21,6 +21,13 @@ import com.intel.bluetooth.BluetoothConsts;
 import com.serwylo.mame.controller.shared.Event;
 import org.apache.commons.cli.*;
 
+/**
+ * Listens for requests from clients, and then receives input and passes it to a {@link java.awt.Robot}.
+ * Displays the QrCode to connect to the server from the phone.
+ * This will stay here as long as no clients are connected. The default behaviour will be to remove the status screen
+ * when a client connects. But we should also give the client the option to show it again so multiple clients can 
+ * connect. Finally, when the client disconnects, we will show the status again.
+ */
 public class MameControllerServer implements DiscoveryListener
 {
 

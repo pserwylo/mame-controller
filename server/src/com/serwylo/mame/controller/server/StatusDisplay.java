@@ -79,7 +79,7 @@ public class StatusDisplay extends JFrame
 	{
 		try
 		{
-			String connectLink = "https://mc.serwylo.com/?s=" + this.server.getIpAddress().getHostAddress() + ":" + this.server.getPort();
+			String connectLink = "http://mc.serwylo.com/?s=" + this.server.getIpAddress().getHostAddress() + ":" + this.server.getPort();
 			BitMatrix qrCode = new QRCodeWriter().encode( connectLink, BarcodeFormat.QR_CODE, 100, 100 );
 			this.qrConnectImage = MatrixToImageWriter.toBufferedImage( qrCode );
 		}
