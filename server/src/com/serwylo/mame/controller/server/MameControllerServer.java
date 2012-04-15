@@ -206,79 +206,20 @@ public class MameControllerServer implements DiscoveryListener
 
 	public void runWifi()
 	{
-		try
+		if ( this.ipaddress == null )
 		{
-			Robot robot = new Robot();
-
-			if ( this.ipaddress == null )
+			try
 			{
 				this.ipaddress = this.getIpAddressOfServer();
 			}
-
-			ServerSocket serverSocket = new ServerSocket( this.port, 50, this.ipaddress );
-			System.out.println( "Started server at " + this.ipaddress.getHostAddress() + ":" + this.port );
-
-			if ( this.showGuiStatus )
+			catch ( SocketException se )
 			{
-				new StatusDisplay( this );
+				System.err.println( "Error getting default IP address" );
+				System.err.println( se.getMessage() );
 			}
+		}
 
-			System.out.println( "Waiting for client..." );
-			Socket clientSocket = serverSocket.accept();
-			System.out.println( "Connected to client..." );
-			
-			BufferedReader input = new BufferedReader( new InputStreamReader( clientSocket.getInputStream() ) );
-			System.out.println( "Waiting for input from client..." );
-			String message = input.readLine();
-			
-			while ( message != null )
-			{
-				System.out.println( "Server received: '" + message + "'" );
-				Event event = Event.createFromString( message );
-				System.out.println( "Event: '" + event + "'" );
-				if ( event.getType() == Event.TYPE_CLOSE )
-				{
-					System.out.println( "Gracefully closing socket" );
-					break;
-				}
-				else
-				{
-					switch( event.getType() )
-					{
-					case Event.TYPE_KEY_DOWN:
-						robot.keyPress( event.getKeyCode() );
-						break;
-						
-					case Event.TYPE_KEY_UP:
-						robot.keyRelease( event.getKeyCode() );
-						break;
-					}
-				}
-
-				System.out.println( "Waiting for input from client..." );
-				message = input.readLine();
-			}
-
-			System.out.println( "Stopping server" );
-			input.close();
-			clientSocket.close();
-			serverSocket.close();
-		}
-		catch ( AWTException awte )
-		{
-			System.err.println( "Error while trying to build robot to control server" );
-			System.err.println( awte.getMessage() );
-		}
-		catch ( BindException be )
-		{
-			System.err.println( "Failed while binding to " + this.ipaddress + ":" + this.port );
-			System.err.println( be.getMessage() );
-		}
-		catch ( IOException ioe )
-		{
-			System.err.println( ioe.getMessage() );
-		}
-		
+		new Thread( new TcpServer( this.ipaddress, this.port ) );
 	}
 
 	@Override
