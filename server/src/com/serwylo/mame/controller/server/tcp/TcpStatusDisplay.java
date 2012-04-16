@@ -1,23 +1,17 @@
-package com.serwylo.mame.controller.server;
+package com.serwylo.mame.controller.server.tcp;
 
 import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
-import com.google.zxing.qrcode.encoder.Encoder;
-import com.google.zxing.qrcode.encoder.QRCode;
+import com.serwylo.mame.controller.server.StatusDisplay;
+import com.serwylo.mame.controller.server.tcp.TcpServer;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import javax.swing.plaf.ColorUIResource;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Displays the status of the server:
@@ -26,20 +20,28 @@ import java.util.Map;
  *  - Number of connected devices
  *  - Status (is it listening for clients?)
  */
-public class TcpStatusDisplay extends JFrame
+public class TcpStatusDisplay extends StatusDisplay
 {
 
 	private BufferedImage qrConnectImage = null;
 
-	private MameControllerServer server;
+	private TcpServer server;
 
 	private JLabel labelConnect;
 	private JLabel labelAddress;
 	private JLabel labelQrImage;
 
-	public TcpStatusDisplay(MameControllerServer server)
+	public TcpStatusDisplay( TcpServer server)
 	{
 		this.server = server;
+	}
+
+	/**
+	 * We will initialize the status display after we know the address and the port of the server.
+	 */
+	public void init()
+	{
+		this.getContentPane().removeAll();
 
 		this.generateQr();
 
@@ -74,6 +76,8 @@ public class TcpStatusDisplay extends JFrame
 	{
 		try
 		{
+			System.out.println( this.server.getIpAddress() );
+			System.out.println( this.server.getIpAddress().getHostAddress() );
 			String connectLink = "http://mc.serwylo.com/?s=" + this.server.getIpAddress().getHostAddress() + ":" + this.server.getPort();
 			BitMatrix qrCode = new QRCodeWriter().encode( connectLink, BarcodeFormat.QR_CODE, 100, 100 );
 			this.qrConnectImage = MatrixToImageWriter.toBufferedImage( qrCode );
@@ -83,24 +87,6 @@ public class TcpStatusDisplay extends JFrame
 			System.err.println( "Cannot generate QRCode:" );
 			System.err.println( we.getMessage() );
 		}
-	}
-
-	@Override
-	public void paint( Graphics g )
-	{
-		super.paint( g );
-		/*
-		Font headingFont = new Font( "Monospaced", Font.BOLD, 16 );
-		g.setFont( headingFont );
-		g.setColor( Color.BLACK );
-		g.drawString( "Connect", 22, 12 );
-
-		Font infoFont = new Font( "Monospaced", Font.PLAIN, 12 );
-		g.setFont( infoFont );
-		// this.server.getIpAddress().getHostAddress() + this.server.getPort();
-		g.drawString( "255.255.255.255", 3, this.getHeight() - 20 );
-		g.drawString( "65000", 12, this.getHeight() - 5 );
-		*/
 	}
 
 }

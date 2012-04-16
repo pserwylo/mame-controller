@@ -1,4 +1,4 @@
-package com.serwylo.mame.controller.server;
+package com.serwylo.mame.controller.server.bluetooth;
 
 import java.awt.Robot;
 import java.awt.event.KeyEvent;

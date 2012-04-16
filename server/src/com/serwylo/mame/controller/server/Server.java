@@ -1,37 +1,50 @@
 package com.serwylo.mame.controller.server;
 
-import java.awt.*;
-import java.io.IOException;
+import com.serwylo.mame.controller.server.events.IMameEventListener;
+import com.serwylo.mame.controller.shared.Event;
+
+import java.util.ArrayList;
 
 public abstract class Server implements Runnable
 {
 
-	protected static Robot robot;
+	/**
+	 * Does whatever is required to start, e.g. opening sockets.
+	 * If it cannot start successfully, then return false.
+	 * @return
+	 */
+	public abstract boolean start();
 
-	public static Robot getRobot()
+	/**
+	 * Close down any sockets or other resources which are being used by the server.
+	 * @return
+	 */
+	public abstract void stop();
+
+	private ArrayList<IMameEventListener> eventListeners = new ArrayList<IMameEventListener>();
+
+	public void addMameEventListener( IMameEventListener listener )
 	{
-		if ( robot == null )
+		if ( !this.eventListeners.contains( listener ) )
 		{
-			try
-			{
-				robot = new Robot();
-			}
-			catch ( AWTException e )
-			{
-				System.err.println( "Could not get access to a java.awt.Robot:" );
-				System.err.println( e.getMessage() );
-				System.exit( 1 ); // No point in using this example
-			}
+			this.eventListeners.add( listener );
 		}
-
-		return robot;
 	}
 
-	public abstract StatusDisplay createStatusDisplay();
-
-	protected void processEvent( Event event )
+	public void removeMameEventListener( IMameEventListener listener )
 	{
+		if ( this.eventListeners.contains( listener ) )
+		{
+			this.eventListeners.remove( listener );
+		}
+	}
 
+	protected void dispatchEvent( Event event )
+	{
+		for ( IMameEventListener listener : this.eventListeners )
+		{
+			listener.receiveEvent( event );
+		}
 	}
 
 }

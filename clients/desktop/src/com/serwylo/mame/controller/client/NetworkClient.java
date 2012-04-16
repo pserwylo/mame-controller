@@ -31,7 +31,7 @@ public class NetworkClient
 	{
 		try
 		{
-			this.socket = new Socket( "130.194.70.189", 55555 );
+			this.socket = new Socket( "192.168.1.7", 57368 );
 			this.output = new PrintWriter( this.socket.getOutputStream(), true );
 			this.input = new BufferedReader( new InputStreamReader( this.socket.getInputStream() ) );
 			return true;
