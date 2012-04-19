@@ -13,10 +13,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
 import com.serwylo.mame.controller.client.MameControllerClient;
-import com.serwylo.mame.controller.client.io.BluetoothEvent;
-import com.serwylo.mame.controller.client.io.IBluetoothListener;
+import com.serwylo.mame.controller.client.NetworkClient;
+import com.serwylo.mame.controller.client.bluetooth.BluetoothEvent;
+import com.serwylo.mame.controller.client.platform.IBluetoothListener;
+import com.serwylo.mame.controller.client.platform.IQrCodeListener;
+import com.serwylo.mame.controller.client.platform.QrCodeReader;
 
-public class SyncScreen implements Screen, ClickListener, IBluetoothListener
+public class SyncScreen implements Screen, ClickListener, IBluetoothListener, IQrCodeListener
 {
 
 	private static SyncScreen singleton;
@@ -143,8 +146,19 @@ public class SyncScreen implements Screen, ClickListener, IBluetoothListener
 	{
         Gdx.input.setInputProcessor( this.stage );
 
+		// Let the user scan a qrcode...
+		MameControllerClient.qrCodeReader.addQrCodeListener( this );
+		MameControllerClient.qrCodeReader.readBarcode();
+
         // If we ended up at this view, then we need to start looking straight away...
-        this.searchForDevices();
+        // this.searchForDevices();
+	}
+
+	@Override
+	public void receiveQrCodeContents( String contents )
+	{
+		NetworkClient.getInstance().open( contents );
+		this.app.setScreen( MainMenu.getInstance( this.app ) );
 	}
 
 	@Override

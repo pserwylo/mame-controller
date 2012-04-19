@@ -1,9 +1,9 @@
 package com.serwylo.mame.controller.client.desktop;
 
-import com.serwylo.mame.controller.client.io.IBluetoothClient;
+import com.serwylo.mame.controller.client.platform.BluetoothClient;
 import com.serwylo.mame.controller.shared.Event;
 
-public class DesktopBluetoothClient extends IBluetoothClient 
+public class DesktopBluetoothClient extends BluetoothClient
 {
 
 	@Override

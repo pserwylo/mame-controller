@@ -60,8 +60,8 @@ public class MainMenu implements Screen, ClickListener
 		}
 		else if ( actor == this.syncButton )
 		{
-			NetworkClient.getInstance().open();
-			// this.app.setScreen( SyncScreen.getInstance( this.app ) );
+			// NetworkClient.getInstance().open();
+			this.app.setScreen( SyncScreen.getInstance( this.app ) );
 		}
 		else if ( actor == this.quitButton )
 		{

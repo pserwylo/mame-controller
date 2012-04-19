@@ -13,7 +13,8 @@ public class MameControllerClientDesktop
 	public static void main(String[] args) 
 	{
 		MameControllerClient.bluetoothClient = new DesktopBluetoothClient();
-		
+		MameControllerClient.qrCodeReader = new DesktopQrCodeReader();
+
 		JoglApplicationConfiguration config = new JoglApplicationConfiguration();
 		config.fullscreen = false;
 		config.width = 800;

@@ -1,8 +1,9 @@
-package com.serwylo.mame.controller.client.io;
+package com.serwylo.mame.controller.client.platform;
 
+import com.serwylo.mame.controller.client.bluetooth.BluetoothEvent;
 import com.serwylo.mame.controller.shared.Event;
 
-public abstract class IBluetoothClient 
+public abstract class BluetoothClient
 {
 	
 	public abstract void init();

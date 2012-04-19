@@ -1,4 +1,4 @@
-package com.serwylo.mame.controller.client.io;
+package com.serwylo.mame.controller.client.bluetooth;
 
 public class BluetoothEvent 
 {

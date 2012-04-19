@@ -12,7 +12,9 @@ public class MameControllerActivity extends AndroidApplication
 {
 
 	public static final int REQUEST_CONNECT_DEVICE = 1;
-	
+
+	private AndroidQrCodeReader qrCodeReader;
+
 	/** 
 	 * Called when the activity is first created. 
 	 */
@@ -44,9 +46,18 @@ public class MameControllerActivity extends AndroidApplication
         }
 
 		MameControllerClient.bluetoothClient = new AndroidBluetoothClient( this );
-        
+
+		this.qrCodeReader = new AndroidQrCodeReader( this );
+		MameControllerClient.qrCodeReader = this.qrCodeReader;
+
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         initialize( new MameControllerClient(), config );
     }
+
+	@Override
+	public void onActivityResult( int requestCode, int resultCode, Intent intent )
+	{
+		this.qrCodeReader.receiveResult( intent.getDataString() );
+	}
     
 }

@@ -11,11 +11,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 
 import com.badlogic.gdx.Gdx;
-import com.serwylo.mame.controller.client.io.BluetoothEvent;
-import com.serwylo.mame.controller.client.io.IBluetoothClient;
+import com.serwylo.mame.controller.client.bluetooth.BluetoothEvent;
+import com.serwylo.mame.controller.client.platform.BluetoothClient;
 import com.serwylo.mame.controller.shared.Event;
 
-public class AndroidBluetoothClient extends IBluetoothClient
+public class AndroidBluetoothClient extends BluetoothClient
 {
 
 	private BluetoothAdapter bluetoothAdapter;

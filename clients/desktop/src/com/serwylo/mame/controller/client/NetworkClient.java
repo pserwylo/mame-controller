@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 
 import com.serwylo.mame.controller.shared.Event;
@@ -26,12 +27,33 @@ public class NetworkClient
 	{
 		return instance;
 	}
-	
-	public boolean open()
+
+	public boolean open( String hostAndPort )
 	{
 		try
 		{
-			this.socket = new Socket( "192.168.1.7", 57368 );
+			int colonIndex = hostAndPort.indexOf( ':' );
+			String addressString = hostAndPort.substring( 0, colonIndex );
+			String portString = hostAndPort.substring( colonIndex + 1 );
+
+			InetAddress address = InetAddress.getByName( addressString );
+			int port = Integer.parseInt( portString );
+
+			return this.open( address, port );
+		}
+		catch ( Exception e )
+		{
+			System.err.println( "Cannot connect to server at '" + hostAndPort + "'." );
+			System.err.println( "Expected syntax 'host:port' (e.g. '192.168.1.1:5555')" );
+			return false;
+		}
+	}
+
+	public boolean open( InetAddress address, int port )
+	{
+		try
+		{
+			this.socket = new Socket( address.getHostAddress(), port );
 			this.output = new PrintWriter( this.socket.getOutputStream(), true );
 			this.input = new BufferedReader( new InputStreamReader( this.socket.getInputStream() ) );
 			return true;
