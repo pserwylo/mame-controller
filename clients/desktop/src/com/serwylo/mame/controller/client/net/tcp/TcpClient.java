@@ -1,4 +1,7 @@
-package com.serwylo.mame.controller.client;
+package com.serwylo.mame.controller.client.net.tcp;
+
+import com.serwylo.mame.controller.client.net.NetworkClient;
+import com.serwylo.mame.controller.shared.Event;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,27 +10,61 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
-import com.serwylo.mame.controller.shared.Event;
-
-public class NetworkClient
+/**
+ * Connects over a TCP/IP socket to the server. Could be using wifi, or perhaps 3G or some other
+ * technology, but obviously the latency would increase to unbearable levels if slower connections
+ * were employed. At any rate, we just presume we are connected to some sort of network.
+ */
+public class TcpClient extends NetworkClient
 {
 
 	private Socket socket;
 	private PrintWriter output;
 	private BufferedReader input;
-	
-	private static NetworkClient instance = new NetworkClient();
-	
-	private NetworkClient()
+
+	private static TcpClient instance = new TcpClient();
+
+	private String hostAndPort;
+	private InetAddress ipAddress;
+	private int port;
+
+	private TcpClient()
 	{
 		
 	}
 
-	public static NetworkClient getInstance()
+	public static TcpClient create()
 	{
-		return instance;
+		return TcpClient.create( null );
 	}
 
+	public static TcpClient create( String connectionString )
+	{
+		TcpClient client = new TcpClient();
+		client.hostAndPort = connectionString;
+		return client;
+	}
+
+	@Override
+	public boolean open()
+	{
+		if ( ipAddress != null )
+		{
+			return this.open( ipAddress, port );
+		}
+		else
+		{
+			return this.open( this.hostAndPort );
+		}
+	}
+
+	/**
+	 * Connects using a string which looks like: "hostname:port" (e.g. "192.168.0.1:5555").
+	 * This is the type of string which will be encoded in the QR code from the server.
+	 * Really just parses
+	 * @param hostAndPort
+	 * @return true on success
+	 */
 	public boolean open( String hostAndPort )
 	{
 		try
@@ -44,7 +81,7 @@ public class NetworkClient
 		catch ( Exception e )
 		{
 			System.err.println( "Cannot connect to server at '" + hostAndPort + "'." );
-			System.err.println( "Expected syntax 'host:port' (e.g. '192.168.1.1:5555')" );
+			System.err.println( "Expected syntax 'host:port' (e.g. '192.168.0.1:5555')" );
 			return false;
 		}
 	}

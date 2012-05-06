@@ -1,6 +1,6 @@
 package com.serwylo.mame.controller.client.platform;
 
-import com.serwylo.mame.controller.client.bluetooth.BluetoothEvent;
+import com.serwylo.mame.controller.client.net.bluetooth.BluetoothEvent;
 import com.serwylo.mame.controller.shared.Event;
 
 public abstract class BluetoothClient

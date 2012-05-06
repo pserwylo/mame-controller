@@ -11,7 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 
 import com.badlogic.gdx.Gdx;
-import com.serwylo.mame.controller.client.bluetooth.BluetoothEvent;
+import com.serwylo.mame.controller.client.net.bluetooth.BluetoothEvent;
 import com.serwylo.mame.controller.client.platform.BluetoothClient;
 import com.serwylo.mame.controller.shared.Event;
 

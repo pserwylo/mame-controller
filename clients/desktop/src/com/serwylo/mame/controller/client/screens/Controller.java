@@ -1,27 +1,16 @@
 package com.serwylo.mame.controller.client.screens;
 
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
 import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.serwylo.mame.controller.client.*;
+import com.serwylo.mame.controller.client.net.NetworkClient;
+import com.serwylo.mame.controller.client.net.NetworkManager;
 import com.serwylo.mame.controller.shared.Event;
 
 public class Controller implements Screen, ClickListener
@@ -67,7 +56,7 @@ public class Controller implements Screen, ClickListener
 	{
 		ArcadeButton button = (ArcadeButton)actor;
 		// MameControllerClient.bluetoothClient.send( Event.createKeyUp( button.getKeyCode() ) );
-		NetworkClient.getInstance().sendEvent( Event.createKeyUp( button.getKeyCode() ) );
+		NetworkManager.getInstance().sendEvent( Event.createKeyUp( button.getKeyCode() ) );
 		// this.app.setScreen( MainMenu.getInstance( this.app ) );
 	}
 	
