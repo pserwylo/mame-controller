@@ -36,26 +36,37 @@ public class Controller implements Screen, ClickListener
 	public Controller( MameControllerClient app )
 	{
 		this.app = app;
-		
         this.stage = new Stage( 800, 400, false );
-        
-        // this.buttons = new ControllerLayout();
-        
-        Json json = new Json( OutputType.minimal );
-        this.buttons = json.fromJson( ControllerLayout.class, Gdx.files.internal( "rainbow.control" ) );
-        
-        for ( ArcadeButton button : this.buttons.getButtonList() )
-        {
-        	this.stage.addActor( button );
-        	button.setClickListener( this );
-        }
+        this.buttons = new ControllerLayout();
+
+		// Json json = new Json( OutputType.minimal );
+		// this.setLayout(  json.fromJson( ControllerLayout.class, Gdx.files.internal( "rainbow.ctrl" ) ) );
+	}
+
+
+	/**
+	 * Clears any previous layout, and assigns the buttons from the new layout.
+	 * @param layout
+	 * @return Returns a reference to itself, so that it can be chained after calls to getInstance().
+	 */
+	public Controller setLayout( ControllerLayout layout )
+	{
+		this.stage.clear();
+
+		this.buttons = layout;
+		for ( ArcadeButton button : this.buttons.getButtonList() )
+		{
+			this.stage.addActor( button );
+			button.setClickListener( this );
+		}
+
+		return this;
 	}
 	
 	@Override
 	public void click( Actor actor, float x, float y )
 	{
 		ArcadeButton button = (ArcadeButton)actor;
-		// MameControllerClient.bluetoothClient.send( Event.createKeyUp( button.getKeyCode() ) );
 		NetworkManager.getInstance().sendEvent( Event.createKeyUp( button.getKeyCode() ) );
 		// this.app.setScreen( MainMenu.getInstance( this.app ) );
 	}

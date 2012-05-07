@@ -1,10 +1,14 @@
 package com.serwylo.mame.controller.client;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializable;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.OrderedMap;
 
 public class ControllerLayout implements Serializable 
@@ -50,6 +54,44 @@ public class ControllerLayout implements Serializable
 		json.writeArrayEnd();
 	}
 
+	public static ArrayList<String> findControllers()
+	{
+		ArrayList<String> controllerNames = new ArrayList<String>();
+
+		FileHandle dir = Gdx.files.internal( "controller.layouts" );
+		for ( FileHandle controllerFile : dir.list( ".ctrl" ) )
+		{
+			Gdx.app.log( "Controller", "Found: " + controllerFile );
+			controllerNames.add( controllerFile.path() );
+		}
+
+		return controllerNames;
+	}
+
+	/**
+	 * Given a name (e.g. "snes.controller") look for the definition of that controller and then try to load it.
+	 * If there is any problems, then return null.
+	 * @param controllerName
+	 * @return Returns null if the controller couldn't be read.
+	 * TODO: Let the person calling this function deal with the exception...
+	 */
+	public static ControllerLayout readController( String controllerName )
+	{
+		ControllerLayout controller = null;
+		Json json = new Json( JsonWriter.OutputType.minimal );
+		try
+		{
+			controller = json.fromJson( ControllerLayout.class, Gdx.files.internal( controllerName ) );
+		}
+		catch ( Exception e )
+		{
+			Gdx.app.error( "Controller", "Cannot read controller '" + controllerName + "'." );
+			Gdx.app.error( "Controller", e.getMessage() );
+		}
+		return controller;
+
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void read( Json json, OrderedMap<String, Object> jsonData ) 
@@ -77,4 +119,8 @@ public class ControllerLayout implements Serializable
 		}
 	}
 
+	public static boolean exists( String controllerPath )
+	{
+		return Gdx.files.internal( controllerPath ).exists();
+	}
 }

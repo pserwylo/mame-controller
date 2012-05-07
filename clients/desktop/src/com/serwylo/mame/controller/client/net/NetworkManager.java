@@ -68,4 +68,9 @@ public class NetworkManager
 		}
 	}
 
+	public ArrayList<NetworkClient> getAllClients()
+	{
+		return this.clients;
+	}
+
 }

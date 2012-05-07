@@ -46,6 +46,19 @@ public class TcpClient extends NetworkClient
 	}
 
 	@Override
+	public String toString()
+	{
+		if ( this.ipAddress != null && this.port > 0 )
+		{
+			return "Wifi Server [" + this.ipAddress.getHostAddress() + ":" + this.port + "]";
+		}
+		else
+		{
+			return "Wifi Server [Disconnected]";
+		}
+	}
+
+	@Override
 	public boolean open()
 	{
 		if ( ipAddress != null )
@@ -93,6 +106,7 @@ public class TcpClient extends NetworkClient
 			this.socket = new Socket( address.getHostAddress(), port );
 			this.output = new PrintWriter( this.socket.getOutputStream(), true );
 			this.input = new BufferedReader( new InputStreamReader( this.socket.getInputStream() ) );
+			this.isConnected = true;
 			return true;
 		}
 		catch( IOException ioe )
@@ -112,6 +126,7 @@ public class TcpClient extends NetworkClient
 	
 	public void close()
 	{
+		this.isConnected = false;
 		try
 		{
 			if ( this.output != null )
