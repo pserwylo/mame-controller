@@ -1,6 +1,7 @@
 package com.serwylo.mame.controller.client;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.files.FileHandle;
 import com.serwylo.mame.controller.client.net.NetworkClient;
 import com.serwylo.mame.controller.client.net.NetworkManager;
 import com.serwylo.mame.controller.client.net.tcp.TcpClient;
@@ -8,6 +9,8 @@ import com.serwylo.mame.controller.client.platform.BluetoothClient;
 import com.serwylo.mame.controller.client.platform.QrCodeReader;
 import com.serwylo.mame.controller.client.screens.Controller;
 import com.serwylo.mame.controller.client.screens.MainMenu;
+import com.serwylo.mame.controller.client.screens.SelectControllerMenu;
+import com.serwylo.mame.controller.client.screens.TcpConnectScreen;
 
 import java.util.ArrayList;
 
@@ -32,7 +35,9 @@ public class MameControllerClient extends Game implements ApplicationListener
 		if ( tcpClient != null )
 		{
 			Gdx.app.log( "Network", "Connecting to " + tcpClient + "..." );
-			boolean result = tcpClient.open();
+			TcpConnectScreen connectScreen = new TcpConnectScreen( this, tcpClient );
+			this.setScreen( connectScreen );
+			boolean result = connectScreen.connect();
 			if ( result )
 			{
 				Gdx.app.log( "Network", "Connected." );
@@ -42,6 +47,16 @@ public class MameControllerClient extends Game implements ApplicationListener
 					Gdx.app.log( "Controller", "Found default controller and showing it..." );
 					screen = Controller.getInstance( this ).setLayout( defaultController );
 				}
+				else if ( ControllerLayout.findControllers().size() > 0 )
+				{
+					Gdx.app.log( "Controller", "Found multiple controllers, showing menu..." );
+					screen = SelectControllerMenu.getInstance( this );
+				}
+			}
+			else
+			{
+				Gdx.app.log( "Network", "Connection failed." );
+				screen = null;
 			}
 		}
 
@@ -72,7 +87,7 @@ public class MameControllerClient extends Game implements ApplicationListener
 		if ( layout == null )
 		{
 			// If there is only one controller type, then return that...
-			ArrayList<String> availableControllers = ControllerLayout.findControllers();
+			ArrayList<FileHandle> availableControllers = ControllerLayout.findControllers();
 			if ( availableControllers.size() == 0 )
 			{
 				Gdx.app.error( "Controller", "No controllers found." );
@@ -80,7 +95,7 @@ public class MameControllerClient extends Game implements ApplicationListener
 			}
 			else if ( availableControllers.size() == 1 )
 			{
-				return ControllerLayout.readController( availableControllers.get( 0 ) );
+				return ControllerLayout.readController( availableControllers.get( 0 ).path() );
 			}
 		}
 

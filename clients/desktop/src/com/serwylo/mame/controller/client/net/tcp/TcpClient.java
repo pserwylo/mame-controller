@@ -1,5 +1,6 @@
 package com.serwylo.mame.controller.client.net.tcp;
 
+import com.badlogic.gdx.Gdx;
 import com.serwylo.mame.controller.client.net.NetworkClient;
 import com.serwylo.mame.controller.shared.Event;
 
@@ -8,7 +9,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 
 /**
  * Connects over a TCP/IP socket to the server. Could be using wifi, or perhaps 3G or some other
@@ -103,7 +106,9 @@ public class TcpClient extends NetworkClient
 	{
 		try
 		{
-			this.socket = new Socket( address.getHostAddress(), port );
+			this.socket = new Socket();
+			SocketAddress socketAddress = new InetSocketAddress( address.getHostAddress(), port );
+			this.socket.connect( socketAddress, 3000 );
 			this.output = new PrintWriter( this.socket.getOutputStream(), true );
 			this.input = new BufferedReader( new InputStreamReader( this.socket.getInputStream() ) );
 			this.isConnected = true;
@@ -111,8 +116,7 @@ public class TcpClient extends NetworkClient
 		}
 		catch( IOException ioe )
 		{
-			System.err.println( ioe.getMessage() );
-			ioe.printStackTrace();
+			Gdx.app.error( "Tcp Network", ioe.getMessage() );
 			return false;
 		}
 	}

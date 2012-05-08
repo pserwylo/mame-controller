@@ -54,18 +54,24 @@ public class ControllerLayout implements Serializable
 		json.writeArrayEnd();
 	}
 
-	public static ArrayList<String> findControllers()
+	/**
+	 * Looks for definition files which describe controller layouts and sprites.
+	 * (files ending in .ctrl in the controller.layouts folder).
+	 * @return List of {@link FileHandle}s pointing to different controller definitions.
+	 */
+	public static ArrayList<FileHandle> findControllers()
 	{
-		ArrayList<String> controllerNames = new ArrayList<String>();
+		ArrayList<FileHandle> controllers = new ArrayList<FileHandle>();
 
+		// TODO: Add an option for where else to look in the filesystem for advanced users.
 		FileHandle dir = Gdx.files.internal( "controller.layouts" );
 		for ( FileHandle controllerFile : dir.list( ".ctrl" ) )
 		{
 			Gdx.app.log( "Controller", "Found: " + controllerFile );
-			controllerNames.add( controllerFile.path() );
+			controllers.add( controllerFile );
 		}
 
-		return controllerNames;
+		return controllers;
 	}
 
 	/**

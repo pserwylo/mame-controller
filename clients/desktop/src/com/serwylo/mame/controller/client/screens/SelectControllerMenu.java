@@ -2,6 +2,7 @@ package com.serwylo.mame.controller.client.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -11,36 +12,39 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
+import com.serwylo.mame.controller.client.ControllerLayout;
 import com.serwylo.mame.controller.client.MameControllerClient;
 
-public class MainMenu implements Screen, ClickListener
+import java.util.ArrayList;
+
+public class SelectControllerMenu implements Screen, ClickListener
 {
 
-	private static MainMenu singleton;
+	private static SelectControllerMenu singleton;
 
-	public static MainMenu getInstance( MameControllerClient app )
+	public static SelectControllerMenu getInstance( MameControllerClient app )
 	{
 		if ( singleton == null )
 		{
-			singleton = new MainMenu( app );
+			singleton = new SelectControllerMenu( app );
 		}
 		return singleton;
 	}
 
 	private Stage stage;
-	
+
 	/**
 	 * Required so that we can ask for other screens to be displayed.
 	 */
 	private MameControllerClient app;
-	
+
 	/**
-	 * Keep references to the menu buttons so that we can use ourself as a 
+	 * Keep references to the menu buttons so that we can use ourself as a
 	 * click listener.
 	 */
-	private TextButton openControllerButton, syncButton, optionsButton, quitButton;
-	
-	public MainMenu( MameControllerClient app )
+	private TextButton backButton;
+
+	public SelectControllerMenu( MameControllerClient app )
 	{        
 		this.app = app;
 	}
@@ -48,17 +52,9 @@ public class MainMenu implements Screen, ClickListener
 	@Override
 	public void click( Actor actor, float x, float y )
 	{
-		if ( actor == this.openControllerButton )
+		if ( actor == this.backButton )
 		{
-			this.app.setScreen( Controller.getInstance( this.app ) );
-		}
-		else if ( actor == this.syncButton )
-		{
-			// this.app.setScreen( StatusScreen.getInstance( this.app ) );
-		}
-		else if ( actor == this.quitButton )
-		{
-			Gdx.app.exit();
+			this.app.setScreen( MainMenu.getInstance( this.app ) );
 		}
 	}
 	
@@ -74,7 +70,7 @@ public class MainMenu implements Screen, ClickListener
 	@Override
 	public void resize( int width, int height ) 
 	{
-		if ( this.openControllerButton == null )
+		if ( this.backButton == null )
 		{
 			this.createUi( width, height );
 		}
@@ -90,27 +86,27 @@ public class MainMenu implements Screen, ClickListener
         Table table = new Table( skin );
         table.width = width;
         table.height = height;
-        this.stage.addActor(table);
+        this.stage.addActor( table );
         
         TableLayout layout = table.getTableLayout();
 
-        this.openControllerButton = new TextButton( "Open Controller", skin.getStyle( TextButtonStyle.class ), "openControllerButton" );
-        this.openControllerButton.setClickListener( this );
-        layout.register( this.openControllerButton );
+		ArrayList<FileHandle> controllers = ControllerLayout.findControllers();
+		for ( FileHandle controller : controllers )
+		{
+			String controllerName = controller.nameWithoutExtension();
+			TextButton controllerButton = new TextButton( controllerName, skin.getStyle( TextButtonStyle.class ), controllerName + "Button" );
+			controllerButton.setClickListener( this );
+			controllerButton.size( 400, 80 );
+			layout.add( controllerButton );
 
-        this.syncButton = new TextButton( "Sync to Arcade Machine", skin.getStyle( TextButtonStyle.class ), "syncButton" );
-        this.syncButton.setClickListener( this );
-        layout.register( this.syncButton );
+			layout.add( new Table() );
+		}
 
-        this.optionsButton = new TextButton( "Options", skin.getStyle( TextButtonStyle.class ), "optionsButton" );
-        this.optionsButton.setClickListener( this );
-        layout.register( this.optionsButton );
-         
-        this.quitButton = new TextButton( "Quit", skin.getStyle( TextButtonStyle.class ), "quitButton" );
-        this.quitButton.setClickListener( this );
-        layout.register( this.quitButton );
+        this.backButton = new TextButton( "Back", skin.getStyle( TextButtonStyle.class ), "backButton" );
+        this.backButton.setClickListener( this );
+        layout.register( this.backButton );
 
-        layout.parse( Gdx.files.internal( "ui/screens/main-menu.txt" ).readString() );
+        layout.parse( Gdx.files.internal( "ui/screens/select-controller.txt" ).readString() );
 	}
 
 	@Override

@@ -6,59 +6,49 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
 import com.serwylo.mame.controller.client.MameControllerClient;
+import com.serwylo.mame.controller.client.net.bluetooth.BluetoothEvent;
+import com.serwylo.mame.controller.client.platform.IBluetoothListener;
+import com.serwylo.mame.controller.client.platform.IQrCodeListener;
 
-public class MainMenu implements Screen, ClickListener
+public abstract class StatusScreen implements Screen, ClickListener
 {
 
-	private static MainMenu singleton;
-
-	public static MainMenu getInstance( MameControllerClient app )
-	{
-		if ( singleton == null )
-		{
-			singleton = new MainMenu( app );
-		}
-		return singleton;
-	}
-
-	private Stage stage;
+	protected Stage stage;
 	
 	/**
 	 * Required so that we can ask for other screens to be displayed.
 	 */
-	private MameControllerClient app;
+	protected MameControllerClient app;
 	
 	/**
-	 * Keep references to the menu buttons so that we can use ourself as a 
-	 * click listener.
+	 * Keep references to the menu buttons so that we can use ourself as a click listener.
 	 */
-	private TextButton openControllerButton, syncButton, optionsButton, quitButton;
+	protected TextButton cancelButton;
 	
-	public MainMenu( MameControllerClient app )
+	/**
+	 * Keeps the user informed as to what the sync is currently doing (e.g. searching
+	 * for devices to connect to).
+	 */
+	protected Label statusLabel;
+
+	public StatusScreen( MameControllerClient app )
 	{        
 		this.app = app;
 	}
-	
+
 	@Override
 	public void click( Actor actor, float x, float y )
 	{
-		if ( actor == this.openControllerButton )
+		if ( actor == this.cancelButton )
 		{
-			this.app.setScreen( Controller.getInstance( this.app ) );
-		}
-		else if ( actor == this.syncButton )
-		{
-			// this.app.setScreen( StatusScreen.getInstance( this.app ) );
-		}
-		else if ( actor == this.quitButton )
-		{
-			Gdx.app.exit();
+			this.app.setScreen( MainMenu.getInstance( this.app ) );
 		}
 	}
 	
@@ -74,7 +64,7 @@ public class MainMenu implements Screen, ClickListener
 	@Override
 	public void resize( int width, int height ) 
 	{
-		if ( this.openControllerButton == null )
+		if ( this.statusLabel == null )
 		{
 			this.createUi( width, height );
 		}
@@ -94,23 +84,14 @@ public class MainMenu implements Screen, ClickListener
         
         TableLayout layout = table.getTableLayout();
 
-        this.openControllerButton = new TextButton( "Open Controller", skin.getStyle( TextButtonStyle.class ), "openControllerButton" );
-        this.openControllerButton.setClickListener( this );
-        layout.register( this.openControllerButton );
+        this.statusLabel = new Label( "", skin );
+        layout.register( "statusLabel", this.statusLabel );
+        
+        this.cancelButton = new TextButton( "Cancel", skin.getStyle( TextButtonStyle.class ), "cancelButton" );
+        this.cancelButton.setClickListener( this );
+        layout.register( this.cancelButton );
 
-        this.syncButton = new TextButton( "Sync to Arcade Machine", skin.getStyle( TextButtonStyle.class ), "syncButton" );
-        this.syncButton.setClickListener( this );
-        layout.register( this.syncButton );
-
-        this.optionsButton = new TextButton( "Options", skin.getStyle( TextButtonStyle.class ), "optionsButton" );
-        this.optionsButton.setClickListener( this );
-        layout.register( this.optionsButton );
-         
-        this.quitButton = new TextButton( "Quit", skin.getStyle( TextButtonStyle.class ), "quitButton" );
-        this.quitButton.setClickListener( this );
-        layout.register( this.quitButton );
-
-        layout.parse( Gdx.files.internal( "ui/screens/main-menu.txt" ).readString() );
+        layout.parse( Gdx.files.internal( "ui/screens/sync.txt" ).readString() );
 	}
 
 	@Override
