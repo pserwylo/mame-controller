@@ -1,6 +1,7 @@
 package com.serwylo.mame.controller.client.net.tcp;
 
 import com.badlogic.gdx.Gdx;
+import com.serwylo.mame.controller.client.net.ConnectionEvent;
 import com.serwylo.mame.controller.client.net.NetworkClient;
 import com.serwylo.mame.controller.shared.Event;
 
@@ -55,6 +56,10 @@ public class TcpClient extends NetworkClient
 		{
 			return "Wifi Server [" + this.ipAddress.getHostAddress() + ":" + this.port + "]";
 		}
+		else if ( this.hostAndPort != null )
+		{
+			return "Wifi Server [" + this.hostAndPort + "]";
+		}
 		else
 		{
 			return "Wifi Server [Disconnected]";
@@ -91,7 +96,6 @@ public class TcpClient extends NetworkClient
 
 			InetAddress address = InetAddress.getByName( addressString );
 			int port = Integer.parseInt( portString );
-
 			return this.open( address, port );
 		}
 		catch ( Exception e )
@@ -102,23 +106,33 @@ public class TcpClient extends NetworkClient
 		}
 	}
 
-	public boolean open( InetAddress address, int port )
+	public boolean open( final InetAddress address, final int port )
 	{
-		try
+		new Thread( new Runnable()
 		{
-			this.socket = new Socket();
-			SocketAddress socketAddress = new InetSocketAddress( address.getHostAddress(), port );
-			this.socket.connect( socketAddress, 3000 );
-			this.output = new PrintWriter( this.socket.getOutputStream(), true );
-			this.input = new BufferedReader( new InputStreamReader( this.socket.getInputStream() ) );
-			this.isConnected = true;
-			return true;
-		}
-		catch( IOException ioe )
-		{
-			Gdx.app.error( "Tcp Network", ioe.getMessage() );
-			return false;
-		}
+			@Override
+			public void run()
+			{
+				try
+				{
+					TcpClient.this.socket = new Socket();
+					SocketAddress socketAddress = new InetSocketAddress( address.getHostAddress(), port );
+					TcpClient.this.socket.connect( socketAddress, 3000 );
+					TcpClient.this.output = new PrintWriter( TcpClient.this.socket.getOutputStream(), true );
+					TcpClient.this.input = new BufferedReader( new InputStreamReader( TcpClient.this.socket.getInputStream() ) );
+					TcpClient.this.isConnected = true;
+					TcpClient.this.notifyListeners( ConnectionEvent.createConnectedEvent( TcpClient.this ) );
+				}
+				catch( IOException ioe )
+				{
+					Gdx.app.error( "Tcp Network", ioe.getMessage() );
+					TcpClient.this.notifyListeners( ConnectionEvent.createConnectionFailedEvent( TcpClient.this, ioe ) );
+				}
+
+			}
+
+		}).start();
+		return true;
 	}
 	
 	public void sendEvent( Event event )

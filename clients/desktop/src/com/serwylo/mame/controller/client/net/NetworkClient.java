@@ -2,6 +2,8 @@ package com.serwylo.mame.controller.client.net;
 
 import com.serwylo.mame.controller.shared.Event;
 
+import java.util.ArrayList;
+
 public abstract class NetworkClient
 {
 
@@ -19,5 +21,31 @@ public abstract class NetworkClient
 	{
 		return this.isConnected;
 	}
+
+	public final void addConnectionListener( IConnectionListener listener )
+	{
+		if ( !this.listeners.contains( listener ) )
+		{
+			this.listeners.add( listener );
+		}
+	}
+
+	public final void removeConnectionListener( IConnectionListener listener )
+	{
+		if ( this.listeners.contains( listener ) )
+		{
+			this.listeners.remove( listener );
+		}
+	}
+
+	protected void notifyListeners( ConnectionEvent event )
+	{
+		for ( IConnectionListener listener : this.listeners )
+		{
+			listener.onConnectionEvent( event );
+		}
+	}
+
+	private ArrayList<IConnectionListener> listeners = new ArrayList<IConnectionListener>();
 
 }

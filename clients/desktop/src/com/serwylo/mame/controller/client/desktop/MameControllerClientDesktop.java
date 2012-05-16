@@ -1,5 +1,6 @@
 package com.serwylo.mame.controller.client.desktop;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.jogl.JoglApplication;
 import com.badlogic.gdx.backends.jogl.JoglApplicationConfiguration;
 import com.serwylo.mame.controller.client.MameControllerClient;

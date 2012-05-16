@@ -37,69 +37,13 @@ public class MameControllerClient extends Game implements ApplicationListener
 			Gdx.app.log( "Network", "Connecting to " + tcpClient + "..." );
 			TcpConnectScreen connectScreen = new TcpConnectScreen( this, tcpClient );
 			this.setScreen( connectScreen );
-			boolean result = connectScreen.connect();
-			if ( result )
-			{
-				Gdx.app.log( "Network", "Connected." );
-				ControllerLayout defaultController = this.getDefaultController();
-				if ( defaultController != null )
-				{
-					Gdx.app.log( "Controller", "Found default controller and showing it..." );
-					screen = Controller.getInstance( this ).setLayout( defaultController );
-				}
-				else if ( ControllerLayout.findControllers().size() > 0 )
-				{
-					Gdx.app.log( "Controller", "Found multiple controllers, showing menu..." );
-					screen = SelectControllerMenu.getInstance( this );
-				}
-			}
-			else
-			{
-				Gdx.app.log( "Network", "Connection failed." );
-				screen = null;
-			}
-		}
-
-		if ( screen != null )
-		{
-			this.setScreen( screen );
+			connectScreen.connect();
 		}
 		else
 		{
+			Gdx.app.log( "Main", "No TcpClient found, just showing main menu..." );
 			this.setScreen( MainMenu.getInstance( this ) );
 		}
-
-	}
-
-	protected ControllerLayout getDefaultController()
-	{
-		ControllerLayout layout = null;
-
-		// Try to get a controller to open without the user having to do anything...
-		Preferences preferences = Gdx.app.getPreferences( "controller" );
-		String lastController = preferences.getString( "last-controller" );
-		if ( lastController != null && lastController.length() > 0 && ControllerLayout.exists( lastController ) )
-		{
-			// Try to find the appropriate controller...
-			layout = ControllerLayout.readController( lastController );
-		}
-
-		if ( layout == null )
-		{
-			// If there is only one controller type, then return that...
-			ArrayList<FileHandle> availableControllers = ControllerLayout.findControllers();
-			if ( availableControllers.size() == 0 )
-			{
-				Gdx.app.error( "Controller", "No controllers found." );
-				return null;
-			}
-			else if ( availableControllers.size() == 1 )
-			{
-				return ControllerLayout.readController( availableControllers.get( 0 ).path() );
-			}
-		}
-
-		return null;
 	}
 
 }
