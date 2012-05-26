@@ -37,6 +37,7 @@ public class TcpConnectScreen extends StatusScreen implements IConnectionListene
 			case ConnectionEvent.TYPE_CONNECTED:
 				Gdx.app.log( "Network", "Connected." );
 				this.statusLabel.setText( "Connected!" );
+				this.showController();
 				break;
 
 			case ConnectionEvent.TYPE_CONNECTION_FAILED:
