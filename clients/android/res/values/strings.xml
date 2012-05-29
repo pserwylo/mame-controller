@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="hello">Hello World, MameControllerActivity!</string>
     <string name="app_name">Mame Controller</string>
-
+    <string name="connect_scan">Connect\n(barcode)</string>
+    <string name="quit">Quit</string>
+    <string name="settings">Settings</string>
+	<string name="connect_manual">Connect\n(manual)</string>
+	<string name="cancel">Cancel</string>
 </resources>

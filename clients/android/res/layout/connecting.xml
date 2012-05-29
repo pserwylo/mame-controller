@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="20dp"
+	android:gravity="center"
+    >
+
+	<TextView
+		android:id="@+id/txtStatus"
+		android:textSize="30dp"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"/>
+
+	<TextView
+		android:id="@+id/txtSubStatus"
+		android:layout_marginBottom="60dp"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+
+    <Button
+		android:id="@+id/btnQuit"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        />
+</LinearLayout>
+

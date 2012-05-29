@@ -66,7 +66,7 @@ public class TcpStatusDisplay extends StatusDisplay
 		{
 			this.labelQrImage = new JLabel( new ImageIcon( this.qrConnectImage ) );
 			panel.add( this.labelQrImage, BorderLayout.CENTER );
-			height = 100;
+			height = 150;
 		}
 
 		this.setSize( 140, height );
@@ -78,8 +78,8 @@ public class TcpStatusDisplay extends StatusDisplay
 		{
 			System.out.println( this.server.getIpAddress() );
 			System.out.println( this.server.getIpAddress().getHostAddress() );
-			String connectLink = "http://mc.serwylo.com/?s=" + this.server.getIpAddress().getHostAddress() + ":" + this.server.getPort();
-			BitMatrix qrCode = new QRCodeWriter().encode( connectLink, BarcodeFormat.QR_CODE, 100, 100 );
+			String connectLink = "http://mc.serwylo.com/wifi?host=" + this.server.getIpAddress().getHostAddress() + "&port=" + this.server.getPort();
+			BitMatrix qrCode = new QRCodeWriter().encode( connectLink, BarcodeFormat.QR_CODE, 125, 125 );
 			this.qrConnectImage = MatrixToImageWriter.toBufferedImage( qrCode );
 		}
 		catch ( WriterException we )
