@@ -132,8 +132,7 @@ public class WifiConnectActivity extends Activity implements IConnectionListener
 				((TextView)this.findViewById( R.id.txtStatus )).setText( event.getClient().toString() );
 				((TextView)this.findViewById( R.id.txtSubStatus )).setText( event.getStatus() );
 
-				Intent intent = new Intent( ControllerActivity.ACTION_LAUNCH_DEFAULT_CONTROLLER );
-				this.startActivity( intent );
+				ControllerActivity.showDefaultController( this );
 				break;
 
 			case ConnectionEvent.TYPE_ERROR:

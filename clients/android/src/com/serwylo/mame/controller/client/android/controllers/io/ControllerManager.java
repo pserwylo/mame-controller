@@ -13,6 +13,8 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 /**
  * TODO: Add an option for advanced users to get controllers from SD card.
@@ -20,10 +22,7 @@ import java.util.ArrayList;
 public class ControllerManager
 {
 
-	/**
-	 * Suffixed with a "/" to make concatenation earlier.
-	 */
-	private static final String DIR_CONTROLLERS = "controllers/";
+	private static final String DIR_CONTROLLERS = "controllers";
 
 	/**
 	 * All preferences to do with controllers will be stored in here.
@@ -38,7 +37,7 @@ public class ControllerManager
 
 	public static boolean exists( Context context, String controllerName )
 	{
-		File file = context.getFileStreamPath( DIR_CONTROLLERS + controllerName );
+		File file = context.getFileStreamPath( DIR_CONTROLLERS + "/" + controllerName );
 		return file.exists();
 	}
 
@@ -47,18 +46,19 @@ public class ControllerManager
 	 * (files ending in .ctrl in the controller.layouts folder).
 	 * @return List of {@link File}s pointing to different controller definitions.
 	 */
-	public static String[] findControllers( Context context )
+	public static ArrayList<String> findControllers( Context context ) throws IOException
 	{
-		File dir = context.getDir( DIR_CONTROLLERS, Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE );
-
-		return dir.list( new FilenameFilter()
+		String[] fileNames = context.getAssets().list( DIR_CONTROLLERS );
+		ArrayList<String> validControllerFileNames = new ArrayList<String>( fileNames.length );
+		for ( String name : fileNames )
 		{
-			@Override
-			public boolean accept( File dir, String name )
+			if ( ( name.length() > 5 ) && name.substring( name.length() - 5, name.length() ).toLowerCase().equals( ".ctrl" ) )
 			{
-				return ( name.length() > 5 ) && name.substring( name.length() - 6, name.length() - 1 ).toLowerCase().equals( ".ctrl" );
+				Log.d( "MAME", "Found controller '" + name + "'" );
+				validControllerFileNames.add( name );
 			}
-		});
+		}
+		return validControllerFileNames;
 	}
 
 	/**
@@ -67,20 +67,22 @@ public class ControllerManager
 	 * @param controllerName
 	 * @return Returns null if the controller couldn't be read.
 	 */
-	public static ControllerDefinition readController( String controllerName ) throws IOException, JSONException
+	public static ControllerDefinition readController( Context context, String controllerName ) throws IOException, JSONException
 	{
-		BufferedReader reader = new BufferedReader( new FileReader( DIR_CONTROLLERS + controllerName ) );
 
-		// Read contents of file into buffer...
-		StringBuilder buffer = new StringBuilder();
-		String line = reader.readLine();
-		while ( line != null )
+		// http://stackoverflow.com/questions/309424/in-java-how-do-i-read-convert-an-inputstream-to-a-string
+		InputStream input = context.getAssets().open( DIR_CONTROLLERS + "/" + controllerName );
+		String fileContents = null;
+		try
 		{
-			buffer.append( line );
-			line = reader.readLine();
+			fileContents = new Scanner( input ).useDelimiter( "\\A" ).next();
+		}
+		catch( NoSuchElementException e )
+		{
+			throw new IOException( "Error reading controller '" + controllerName + "'", e );
 		}
 
-		JSONObject json = new JSONObject( buffer.toString() );
+		JSONObject json = new JSONObject( fileContents );
 
 		String label = json.getString( "label" );
 		JSONArray buttons = json.getJSONArray( "buttons" );
@@ -118,20 +120,20 @@ public class ControllerManager
 			if ( lastController != null && lastController.length() > 0 && ControllerManager.exists( context, lastController ) )
 			{
 				// Try to find the appropriate controller...
-				layout = ControllerManager.readController( lastController );
+				layout = ControllerManager.readController( context, lastController );
 			}
 
 			if ( layout == null )
 			{
 				// If there is only one controller type, then return that...
-				String[] availableControllers = ControllerManager.findControllers( context );
-				if ( availableControllers.length == 0 )
+				ArrayList<String> availableControllers = ControllerManager.findControllers( context );
+				if ( availableControllers.isEmpty() )
 				{
-					Log.e( "Controller", "No controllers found." );
+					Log.e( "MAME", "No controllers found." );
 				}
-				else if ( availableControllers.length == 1 )
+				else if ( availableControllers.size() == 1 )
 				{
-					layout = ControllerManager.readController( availableControllers[ 0 ] );
+					layout = ControllerManager.readController( context, availableControllers.get( 0 ) );
 				}
 			}
 
