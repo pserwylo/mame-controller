@@ -3,31 +3,24 @@
 "buttons": [
 	{
 	    "type": "arcade",
-		"colour": 1,
+		"colour": 0xFFCC0000,
 		"keyCode": 65,
 		"x": 50,
 		"y": 50
 	},
 	{
 	    "type": "arcade",
-		"colour": 0,
+		"colour": 0xFF00CC00,
 		"keyCode": 66,
 		"x": 150,
 		"y": 150
 	},
 	{
 	    "type": "arcade",
-		"colour": 3,
+		"colour": 0xFF0000CC,
 		"keyCode": 67,
 		"x": 250,
 		"y": 250
-	},
-	{
-	    "type": "arcade",
-		"colour": 2,
-		"keyCode": 68,
-		"x": 350,
-		"y": 350
 	}
 ]
 }

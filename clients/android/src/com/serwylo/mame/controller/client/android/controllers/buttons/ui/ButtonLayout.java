@@ -14,16 +14,6 @@ public class ButtonLayout extends ViewGroup
 	}
 
 	@Override
-	protected void onMeasure( int widthMeasureSpec, int heightMeasureSpec )
-	{
-		this.setMeasuredDimension( MeasureSpec.getSize( widthMeasureSpec ), MeasureSpec.getSize( heightMeasureSpec ) );
-		for ( int i = 0; i < this.getChildCount(); i ++ )
-		{
-			this.getChildAt( i ).measure( widthMeasureSpec, heightMeasureSpec );
-		}
-	}
-
-	@Override
 	protected void onLayout( boolean changed, int left, int top, int right, int bottom )
 	{
 		for ( int i = 0; i < this.getChildCount(); i ++ )
@@ -32,7 +22,7 @@ public class ButtonLayout extends ViewGroup
 			if ( child instanceof IButtonUi )
 			{
 				IButtonUi button = (IButtonUi)child;
-				child.layout( button.getButton().getX(), button.getButton().getY(), child.getMeasuredWidth(), child.getMeasuredHeight() );
+				child.layout( button.getButton().getX(), button.getButton().getY(), child.getLayoutParams().width, child.getLayoutParams().height );
 			}
 		}
 	}
