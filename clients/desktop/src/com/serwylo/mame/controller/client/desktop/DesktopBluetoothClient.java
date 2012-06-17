@@ -1,7 +1,7 @@
 package com.serwylo.mame.controller.client.desktop;
 
 import com.serwylo.mame.controller.client.platform.BluetoothClient;
-import com.serwylo.mame.controller.shared.Event;
+import com.serwylo.mame.controller.shared.InputEvent;
 
 public class DesktopBluetoothClient extends BluetoothClient
 {
@@ -19,7 +19,7 @@ public class DesktopBluetoothClient extends BluetoothClient
 	}
 	
 	@Override
-	public void send( Event event )
+	public void send( InputEvent event )
 	{
 		System.out.println( "Pretending to send event '" + event.toString() + "' to bluetooth server..." );
 	}

@@ -1,7 +1,9 @@
 package com.serwylo.mame.controller.server;
 
-import com.serwylo.mame.controller.server.events.IMameEventListener;
-import com.serwylo.mame.controller.shared.Event;
+import com.serwylo.mame.controller.server.events.IInputEventListener;
+import com.serwylo.mame.controller.server.events.IServerEventListener;
+import com.serwylo.mame.controller.server.events.ServerEvent;
+import com.serwylo.mame.controller.shared.InputEvent;
 
 import java.util.ArrayList;
 
@@ -21,29 +23,54 @@ public abstract class Server implements Runnable
 	 */
 	public abstract void stop();
 
-	private ArrayList<IMameEventListener> eventListeners = new ArrayList<IMameEventListener>();
+	private ArrayList<IInputEventListener> inputEventListeners = new ArrayList<IInputEventListener>();
+	private ArrayList<IServerEventListener> serverEventListeners = new ArrayList<IServerEventListener>();
 
-	public void addMameEventListener( IMameEventListener listener )
+	public void addInputEventListener( IInputEventListener listener )
 	{
-		if ( !this.eventListeners.contains( listener ) )
+		if ( !this.inputEventListeners.contains( listener ) )
 		{
-			this.eventListeners.add( listener );
+			this.inputEventListeners.add( listener );
 		}
 	}
 
-	public void removeMameEventListener( IMameEventListener listener )
+	public void removeInputEventListener( IInputEventListener listener )
 	{
-		if ( this.eventListeners.contains( listener ) )
+		if ( this.inputEventListeners.contains( listener ) )
 		{
-			this.eventListeners.remove( listener );
+			this.inputEventListeners.remove( listener );
 		}
 	}
 
-	protected void dispatchEvent( Event event )
+	protected void dispatchInputEvent( InputEvent event )
 	{
-		for ( IMameEventListener listener : this.eventListeners )
+		for ( IInputEventListener listener : this.inputEventListeners )
 		{
-			listener.receiveEvent( event );
+			listener.onInputEvent( event );
+		}
+	}
+
+	public void addServerEventListener( IServerEventListener listener )
+	{
+		if ( !this.serverEventListeners.contains( listener ) )
+		{
+			this.serverEventListeners.add( listener );
+		}
+	}
+
+	public void removeServerEventListener( IServerEventListener listener )
+	{
+		if ( this.serverEventListeners.contains( listener ) )
+		{
+			this.serverEventListeners.remove( listener );
+		}
+	}
+
+	protected void dispatchServerEvent( ServerEvent event )
+	{
+		for ( IServerEventListener listener : this.serverEventListeners )
+		{
+			listener.onServerEvent( event );
 		}
 	}
 

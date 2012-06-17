@@ -1,9 +1,13 @@
 package com.serwylo.mame.controller.client.android.net.wifi;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.util.Log;
 import com.serwylo.mame.controller.client.android.net.ConnectionEvent;
 import com.serwylo.mame.controller.client.android.net.NetworkClient;
-import com.serwylo.mame.controller.shared.Event;
+import com.serwylo.mame.controller.shared.InputEvent;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -65,7 +69,7 @@ public class WifiClient extends NetworkClient
 	}
 
 	@Override
-	public void open()
+	public void open( final Context context )
 	{
 		Log.d( "MAME", "WifiClient#open()" );
 		new Thread( new Runnable()
@@ -88,6 +92,30 @@ public class WifiClient extends NetworkClient
 					return;
 				}
 
+				// Local address, should have wifi enabled to correctly route to this address...
+				if ( address.isSiteLocalAddress() )
+				{
+					WifiManager wifiManager = (WifiManager)context.getSystemService( Context.WIFI_SERVICE );
+					if ( !wifiManager.isWifiEnabled() )
+					{
+						// TODO: Try to enable wifi ourselves...
+						Log.e( "MAME", "Wifi disabled, and " + address.getHostName() + " looks like a local address..." );
+						WifiClient.this.notifyListeners( ConnectionEvent.createErrorEvent( WifiClient.this, "Wifi is disabled, and it looks like you are trying to connect to a computer on your local network.\n\nPlease enable wifi." ) );
+						return;
+					}
+
+					ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService( Context.CONNECTIVITY_SERVICE );
+					NetworkInfo networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+					if ( networkInfo == null || !networkInfo.isConnected() )
+					{
+						// TODO: Launch connection intent to let the user connect to wifi themselves...
+						Log.e( "MAME", "Wifi not connected, and " + address.getHostName() + " looks like a local address..." );
+						WifiClient.this.notifyListeners( ConnectionEvent.createErrorEvent( WifiClient.this, "Wifi is not connected, and it looks like you are trying to connect to a computer on your local network.\n\nAre you connected to the correct WIFI network?" ) );
+						return;
+					}
+
+				}
+
 				WifiClient.this.ipAddress = address;
 				WifiClient.this.socket = new Socket();
 				SocketAddress socketAddress = new InetSocketAddress( address.getHostAddress(), port );
@@ -102,6 +130,9 @@ public class WifiClient extends NetworkClient
 					Log.d( "MAME", "Connected." );
 					WifiClient.this.output = new PrintWriter( WifiClient.this.socket.getOutputStream(), true );
 					WifiClient.this.input = new BufferedReader( new InputStreamReader( WifiClient.this.socket.getInputStream() ) );
+					WifiClient.this.isConnected = true;
+					Log.d( "MAME", "Setup writer to talk to server." );
+					WifiClient.this.notifyListeners( ConnectionEvent.createConnectedEvent( WifiClient.this ) );
 				}
 				catch( IOException ioe )
 				{
@@ -109,9 +140,6 @@ public class WifiClient extends NetworkClient
 					WifiClient.this.notifyListeners( ConnectionEvent.createErrorEvent( WifiClient.this, "Could not connect to server (" + ioe.getMessage() + ")", ioe ) );
 				}
 
-				WifiClient.this.isConnected = true;
-				Log.d( "MAME", "Done." );
-				WifiClient.this.notifyListeners( ConnectionEvent.createConnectedEvent( WifiClient.this ) );
 
 			}
 
@@ -121,7 +149,7 @@ public class WifiClient extends NetworkClient
 	/**
 	 * TODO: Check for errors (e.g. is the server still connected?)
 	 */
-	public void sendEvent( Event event )
+	public void sendEvent( InputEvent event )
 	{
 		System.err.println( "Sending to server: '" + event.toString() + "'" );
 		this.output.write( event.toString() );
@@ -135,7 +163,7 @@ public class WifiClient extends NetworkClient
 		{
 			if ( this.output != null )
 			{
-				this.sendEvent( Event.createCloseEvent() );
+				this.sendEvent( InputEvent.createCloseEvent() );
 				this.output.close();
 			}
 			

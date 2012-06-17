@@ -3,10 +3,11 @@ package com.serwylo.mame.controller.server;
 import java.net.*;
 import java.util.ArrayList;
 
-import com.serwylo.mame.controller.server.events.IMameEventListener;
+import com.serwylo.mame.controller.server.events.IInputEventListener;
+import com.serwylo.mame.controller.server.events.ServerEvent;
 import com.serwylo.mame.controller.server.tcp.TcpServer;
 import com.serwylo.mame.controller.server.tcp.TcpServerAppBridge;
-import com.serwylo.mame.controller.shared.Event;
+import com.serwylo.mame.controller.shared.InputEvent;
 import org.apache.commons.cli.*;
 
 /**
@@ -16,7 +17,7 @@ import org.apache.commons.cli.*;
  * when a client connects. But we should also give the client the option to show it again so multiple clients can 
  * connect. Finally, when the client disconnects, we will show the status again.
  */
-public class MameControllerServer implements IMameEventListener
+public class MameControllerServer implements IInputEventListener
 {
 
 	private boolean bluetooth = false;
@@ -89,9 +90,9 @@ public class MameControllerServer implements IMameEventListener
 	}
 
 	@Override
-	public void receiveEvent( Event event )
+	public void onInputEvent( InputEvent event )
 	{
-		if ( event.getType() == Event.TYPE_CLOSE )
+		if ( event.getType() == InputEvent.TYPE_CLOSE )
 		{
 			System.out.println( "Gracefully closing socket" );
 		}

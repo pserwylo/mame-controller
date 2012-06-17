@@ -60,7 +60,6 @@ public class WifiConnectActivity extends Activity implements IConnectionListener
 	 *
 	 * In the case of {@link WifiConnectActivity#ACTION_CONNECT_WITH_PROFILE}, we expect {@link android.content.Intent#getExtras()}
 	 * to have a key {@link WifiConnectActivity#DATA_CONNECTION_PROFILE}.
-	 * @return A profile which holds info about the host and port of the server to connect to.
 	 */
 	protected void onStart()
 	{
@@ -70,9 +69,9 @@ public class WifiConnectActivity extends Activity implements IConnectionListener
 		Intent intent = this.getIntent();
 		String error = null;
 
-		// Instead of Intent.ACTION_MAIN which is the intent when opened from the launcher...
 		if ( intent != null && intent.getAction() != null )
 		{
+			// Instead of Intent.ACTION_MAIN which is the intent when opened from the launcher...
 			if ( intent.getAction().equals( Intent.ACTION_VIEW ) )
 			{
 				Uri uri = intent.getData();
@@ -97,7 +96,7 @@ public class WifiConnectActivity extends Activity implements IConnectionListener
 		if ( profile != null )
 		{
 			NetworkClient client = profile.createClient();
-			AsyncConnector connector = new AsyncConnector( client );
+			AsyncConnector connector = new AsyncConnector( this, client );
 			connector.addConnectionListener( this );
 			connector.execute();
 		}
@@ -126,17 +125,18 @@ public class WifiConnectActivity extends Activity implements IConnectionListener
 		{
 			case ConnectionEvent.TYPE_CONNECTED:
 				((TextView)this.findViewById( R.id.txtSubStatus )).setText( "Connected!" );
+				NetworkClient.setCurrent( event.getClient() );
+				ControllerActivity.showDefaultController( this );
 				break;
 
 			case ConnectionEvent.TYPE_STATUS:
 				((TextView)this.findViewById( R.id.txtStatus )).setText( event.getClient().toString() );
 				((TextView)this.findViewById( R.id.txtSubStatus )).setText( event.getStatus() );
-
-				ControllerActivity.showDefaultController( this );
 				break;
 
 			case ConnectionEvent.TYPE_ERROR:
-
+				((TextView)this.findViewById( R.id.txtStatus )).setText( "Uh oh..." );
+				((TextView)this.findViewById( R.id.txtSubStatus )).setText( "Could not connect to " + event.getClient().toString() + "\n\n" + event.getStatus() );
 				break;
 		}
 	}

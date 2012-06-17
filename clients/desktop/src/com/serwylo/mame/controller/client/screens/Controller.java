@@ -9,9 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.serwylo.mame.controller.client.*;
-import com.serwylo.mame.controller.client.net.NetworkClient;
 import com.serwylo.mame.controller.client.net.NetworkManager;
-import com.serwylo.mame.controller.shared.Event;
+import com.serwylo.mame.controller.shared.InputEvent;
 
 public class Controller implements Screen, ClickListener
 {
@@ -67,7 +66,7 @@ public class Controller implements Screen, ClickListener
 	public void click( Actor actor, float x, float y )
 	{
 		ArcadeButton button = (ArcadeButton)actor;
-		NetworkManager.getInstance().sendEvent( Event.createKeyUp( button.getKeyCode() ) );
+		NetworkManager.getInstance().sendEvent( InputEvent.createKeyUp(button.getKeyCode()) );
 		// this.app.setScreen( MainMenu.getInstance( this.app ) );
 	}
 	

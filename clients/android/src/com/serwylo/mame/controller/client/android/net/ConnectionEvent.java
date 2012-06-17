@@ -54,6 +54,11 @@ public class ConnectionEvent
 		return event;
 	}
 
+	public static ConnectionEvent createErrorEvent( NetworkClient client, String errorDescription )
+	{
+		return ConnectionEvent.createErrorEvent( client, errorDescription, null );
+	}
+
 	public static ConnectionEvent createErrorEvent( NetworkClient client, String errorDescription, Exception cause )
 	{
 		ConnectionEvent event = new ConnectionEvent();

@@ -1,14 +1,14 @@
 package com.serwylo.mame.controller.client.platform;
 
 import com.serwylo.mame.controller.client.net.bluetooth.BluetoothEvent;
-import com.serwylo.mame.controller.shared.Event;
+import com.serwylo.mame.controller.shared.InputEvent;
 
 public abstract class BluetoothClient
 {
 	
 	public abstract void init();
 	
-	public abstract void send( Event event );
+	public abstract void send( InputEvent event );
 
 	public abstract void discover();
 	

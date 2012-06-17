@@ -1,13 +1,15 @@
 package com.serwylo.mame.controller.server.tcp;
 
-import com.serwylo.mame.controller.shared.Event;
+import com.serwylo.mame.controller.server.NetworkClientWorker;
+import com.serwylo.mame.controller.server.events.ClientEvent;
+import com.serwylo.mame.controller.shared.InputEvent;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-public class TcpClientWorker implements Runnable
+public class TcpClientWorker extends NetworkClientWorker implements Runnable
 {
 
 	protected TcpServer server;
@@ -22,6 +24,8 @@ public class TcpClientWorker implements Runnable
 	@Override
 	public void run()
 	{
+		this.dispatchClientEvent(ClientEvent.createClientConnected( this.clientSocket.getInetAddress().getHostName() ) );
+
 		try
 		{
 			System.out.println( "Connected to client..." );
@@ -33,7 +37,7 @@ public class TcpClientWorker implements Runnable
 			while ( message != null )
 			{
 				System.out.println( "Server received: '" + message.trim() + "'" );
-				Event event = Event.createFromString( message );
+				InputEvent event = InputEvent.createFromString(message);
 
 				this.server.receiveEvent( event );
 
@@ -44,12 +48,17 @@ public class TcpClientWorker implements Runnable
 			System.out.println( "Stopping server" );
 			input.close();
 			this.clientSocket.close();
+
+			this.dispatchClientEvent( ClientEvent.createClientDisconnected( this.clientSocket.getInetAddress().getHostName() ) );
 		}
 		catch ( IOException ioe )
 		{
 			System.err.println( "Error with client socket:" );
 			System.err.println( ioe.getMessage() );
+
+			this.dispatchClientEvent(ClientEvent.createClientDisconnected( this.clientSocket.getInetAddress().getHostName(), ioe ) );
 		}
+
 	}
 
 }

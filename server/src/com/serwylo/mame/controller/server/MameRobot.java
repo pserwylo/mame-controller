@@ -1,6 +1,6 @@
 package com.serwylo.mame.controller.server;
 
-import com.serwylo.mame.controller.shared.Event;
+import com.serwylo.mame.controller.shared.InputEvent;
 
 import java.awt.Robot;
 import java.awt.AWTException;
@@ -24,17 +24,17 @@ public class MameRobot
 		}
 	}
 
-	public void processEvent( Event event )
+	public void processEvent( InputEvent event )
 	{
 		if ( robot != null )
 		{
 			switch( event.getType() )
 			{
-				case Event.TYPE_KEY_DOWN:
+				case InputEvent.TYPE_KEY_DOWN:
 					robot.keyPress( event.getKeyCode() );
 					break;
 
-				case Event.TYPE_KEY_UP:
+				case InputEvent.TYPE_KEY_UP:
 					robot.keyRelease( event.getKeyCode() );
 					break;
 			}

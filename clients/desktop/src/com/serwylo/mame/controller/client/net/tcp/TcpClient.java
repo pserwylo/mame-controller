@@ -3,7 +3,7 @@ package com.serwylo.mame.controller.client.net.tcp;
 import com.badlogic.gdx.Gdx;
 import com.serwylo.mame.controller.client.net.ConnectionEvent;
 import com.serwylo.mame.controller.client.net.NetworkClient;
-import com.serwylo.mame.controller.shared.Event;
+import com.serwylo.mame.controller.shared.InputEvent;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -135,7 +135,7 @@ public class TcpClient extends NetworkClient
 		return true;
 	}
 	
-	public void sendEvent( Event event )
+	public void sendEvent( InputEvent event )
 	{
 		System.err.println( "Sending to server: '" + event.toString() + "'" );
 		this.output.write( event.toString() );
@@ -149,7 +149,7 @@ public class TcpClient extends NetworkClient
 		{
 			if ( this.output != null )
 			{
-				this.sendEvent( Event.createCloseEvent() );
+				this.sendEvent( InputEvent.createCloseEvent() );
 				this.output.close();
 			}
 			

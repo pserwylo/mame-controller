@@ -1,5 +1,6 @@
 package com.serwylo.mame.controller.client.android.net;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -9,14 +10,16 @@ public class AsyncConnector extends AsyncTask<Void, ConnectionEvent, Boolean> im
 {
 
 	private NetworkClient client;
+	private Context context;
 
-	public AsyncConnector( NetworkClient client )
+	public AsyncConnector( Context context, NetworkClient client)
 	{
+		this.context = context;
 		this.client = client;
 	}
 
 	/**
-	 * Runs the {@link com.serwylo.mame.controller.client.android.net.NetworkClient#open()} method on this thread.
+	 * Runs the {@link com.serwylo.mame.controller.client.android.net.NetworkClient#open(android.content.Context)} method on this thread.
 	 * Listens to the {@link AsyncConnector#client} for {@link ConnectionEvent}s, and then forwards them to anybody
 	 * listening to this class for ConnectionEvents, via the UI thread.
 	 * @param params
@@ -26,7 +29,7 @@ public class AsyncConnector extends AsyncTask<Void, ConnectionEvent, Boolean> im
 	public Boolean doInBackground( Void... params )
 	{
 		this.client.addConnectionListener( this );
-		this.client.open();
+		this.client.open( this.context );
 		return true;
 	}
 

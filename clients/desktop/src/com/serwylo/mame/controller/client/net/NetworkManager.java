@@ -1,6 +1,6 @@
 package com.serwylo.mame.controller.client.net;
 
-import com.serwylo.mame.controller.shared.Event;
+import com.serwylo.mame.controller.shared.InputEvent;
 
 import java.util.ArrayList;
 
@@ -60,7 +60,7 @@ public class NetworkManager
 	 * Forwards 'event' to the network clients which exist.
 	 * @param event
 	 */
-	public void sendEvent( Event event )
+	public void sendEvent( InputEvent event )
 	{
 		for ( NetworkClient client : this.clients )
 		{

@@ -1,6 +1,6 @@
 package com.serwylo.mame.controller.client.net;
 
-import com.serwylo.mame.controller.shared.Event;
+import com.serwylo.mame.controller.shared.InputEvent;
 
 import java.util.ArrayList;
 
@@ -11,7 +11,7 @@ public abstract class NetworkClient
 
 	public abstract boolean open();
 
-	public abstract void sendEvent( Event event );
+	public abstract void sendEvent( InputEvent event );
 
 	public abstract void close();
 

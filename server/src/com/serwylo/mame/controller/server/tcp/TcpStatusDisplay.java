@@ -6,7 +6,10 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.serwylo.mame.controller.server.StatusDisplay;
-import com.serwylo.mame.controller.server.tcp.TcpServer;
+import com.serwylo.mame.controller.server.events.ClientEvent;
+import com.serwylo.mame.controller.server.events.IClientEventListener;
+import com.serwylo.mame.controller.server.events.IServerEventListener;
+import com.serwylo.mame.controller.server.events.ServerEvent;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -20,20 +23,27 @@ import java.awt.image.BufferedImage;
  *  - Number of connected devices
  *  - Status (is it listening for clients?)
  */
-public class TcpStatusDisplay extends StatusDisplay
+public class TcpStatusDisplay extends StatusDisplay implements IServerEventListener, IClientEventListener
 {
 
 	private BufferedImage qrConnectImage = null;
 
 	private TcpServer server;
 
+	private JPanel qrPanel;
 	private JLabel labelConnect;
 	private JLabel labelAddress;
 	private JLabel labelQrImage;
 
+	private JPanel connectedPanel;
+	private JLabel labelConnectedClients;
+
+	private int connectedClients = 0;
+
 	public TcpStatusDisplay( TcpServer server)
 	{
 		this.server = server;
+		this.server.addServerEventListener( this );
 	}
 
 	/**
@@ -45,31 +55,42 @@ public class TcpStatusDisplay extends StatusDisplay
 
 		this.generateQr();
 
-		JPanel panel = new JPanel();
-		this.add( panel );
-		panel.setLayout( new BorderLayout() );
-		panel.setBackground( Color.WHITE );
-		panel.setBorder( new LineBorder( Color.LIGHT_GRAY, 3 ) );
+		this.setTitle( "MAME Controller Server");
+
+		// Construct panel which displays information useful for connecting...
+		this.qrPanel = new JPanel();
+		this.qrPanel.setLayout(new BorderLayout());
+		this.qrPanel.setBackground(Color.WHITE);
+		this.qrPanel.setBorder(new LineBorder(Color.LIGHT_GRAY, 3));
 
 		Font headingFont = new Font( "Monospaced", Font.BOLD, 14 );
 		this.labelConnect = new JLabel( "Connect", JLabel.CENTER );
 		this.labelConnect.setFont( headingFont );
-		panel.add( this.labelConnect, BorderLayout.NORTH );
+		this.qrPanel.add(this.labelConnect, BorderLayout.NORTH);
 
 		Font infoFont = new Font( "Monospaced", Font.BOLD, 10 );
 		this.labelAddress = new JLabel( this.server.getIpAddress().getHostAddress() + ":" + this.server.getPort(), JLabel.CENTER );
 		this.labelAddress.setFont( infoFont );
-		panel.add( this.labelAddress, BorderLayout.SOUTH );
+		this.qrPanel.add(this.labelAddress, BorderLayout.SOUTH);
 
 		int height = 30;
 		if ( this.qrConnectImage != null )
 		{
 			this.labelQrImage = new JLabel( new ImageIcon( this.qrConnectImage ) );
-			panel.add( this.labelQrImage, BorderLayout.CENTER );
+			this.qrPanel.add(this.labelQrImage, BorderLayout.CENTER);
 			height = 150;
 		}
 
+		this.add( this.qrPanel );
 		this.setSize( 140, height );
+
+		// Construct panel which shows how many clients are connected...
+		this.connectedPanel = new JPanel();
+		this.connectedPanel.setLayout( new FlowLayout() );
+
+		this.labelConnectedClients = new JLabel();
+		this.labelConnectedClients.setFont( headingFont );
+		this.connectedPanel.add( this.labelConnectedClients );
 	}
 
 	private void generateQr()
@@ -89,4 +110,51 @@ public class TcpStatusDisplay extends StatusDisplay
 		}
 	}
 
+	@Override
+	public void onServerEvent( ServerEvent event )
+	{
+		if ( event.getType() == ServerEvent.TYPE_NEW_CLIENT )
+		{
+			System.out.println( "New client: " + event );
+			event.getClient().addClientEventListener( this );
+		}
+	}
+
+	@Override
+	public void onClientEvent( ClientEvent event )
+	{
+		if ( event.getType() == ClientEvent.TYPE_CLIENT_CONNECTED )
+		{
+			System.out.println( "Client connected: " + event );
+			this.connectedClients ++;
+		}
+		else if ( event.getType() == ClientEvent.TYPE_CLIENT_DISCONNECTED )
+		{
+			System.out.println( "Client disconnected: " + event );
+			this.connectedClients --;
+		}
+
+		// TODO: Based on settings, either remove completely, don't change anything, or show status when clients connected...
+		boolean hasClients = this.connectedClients > 0;
+		if ( false /* remove completely */ )
+		{
+			this.setVisible( !hasClients );
+		}
+		else if ( false /* update status and still show connection info */ )
+		{
+
+		}
+		else if ( true /* remove connection info, show connected clients */ )
+		{
+			this.removeAll();
+			if ( hasClients )
+			{
+				this.add( this.connectedPanel );
+			}
+			else
+			{
+				this.add( this.qrPanel );
+			}
+		}
+	}
 }

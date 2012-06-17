@@ -18,7 +18,7 @@ import com.serwylo.mame.controller.client.android.controllers.buttons.ArcadeButt
 public class ButtonUiFactory
 {
 
-	public static View createButton( Context context, AbstractButton button )
+	public static ButtonView createButton( Context context, AbstractButton button )
 	{
 		if ( button.getClass() == ArcadeButton.class )
 		{
@@ -32,13 +32,6 @@ public class ButtonUiFactory
 	{
 		ArcadeButtonView btnView = new ArcadeButtonView( context );
 		btnView.setButton( button );
-
-		Drawable image = context.getResources().getDrawable( R.drawable.arcade_button ).mutate();
-		image.setColorFilter( new LightingColorFilter( button.getColour(), 1 ) );
-		btnView.setImageDrawable( image );
-		btnView.setBackgroundColor( Color.TRANSPARENT );
-
-		btnView.setLayoutParams( new AbsoluteLayout.LayoutParams( image.getMinimumWidth(), image.getMinimumHeight(), button.getX(), button.getY() ) );
 
 		return btnView;
 	}

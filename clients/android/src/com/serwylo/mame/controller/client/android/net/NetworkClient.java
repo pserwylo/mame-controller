@@ -1,6 +1,7 @@
 package com.serwylo.mame.controller.client.android.net;
 
-import com.serwylo.mame.controller.shared.Event;
+import android.content.Context;
+import com.serwylo.mame.controller.shared.InputEvent;
 
 import java.util.ArrayList;
 
@@ -22,16 +23,16 @@ public abstract class NetworkClient
 	 * Change the currently available network client.
 	 * @param current
 	 */
-	protected static void setCurrent( NetworkClient current )
+	public static void setCurrent( NetworkClient current )
 	{
 		NetworkClient.current = current;
 	}
 
 	protected boolean isConnected = false;
 
-	public abstract void open();
+	public abstract void open( Context context );
 
-	public abstract void sendEvent( Event event );
+	public abstract void sendEvent( InputEvent event );
 
 	public abstract void close();
 

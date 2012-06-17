@@ -1,7 +1,8 @@
 package com.serwylo.mame.controller.server.tcp;
 
 import com.serwylo.mame.controller.server.Server;
-import com.serwylo.mame.controller.shared.Event;
+import com.serwylo.mame.controller.server.events.ServerEvent;
+import com.serwylo.mame.controller.shared.InputEvent;
 
 import java.io.IOException;
 import java.net.*;
@@ -105,6 +106,7 @@ public class TcpServer extends Server
 			this.socket = new ServerSocket( this.port, 50, this.ipAddress );
 			System.out.println( "Started server at " + this.ipAddress.getHostAddress() + ":" + this.port );
 			success = true;
+			this.dispatchServerEvent( ServerEvent.createServerConnected( this.toString() ) );
 		}
 		catch ( BindException be )
 		{
@@ -145,7 +147,11 @@ public class TcpServer extends Server
 			{
 				System.out.println( "Waiting for client..." );
 				Socket clientSocket = this.socket.accept();
-				new Thread( new TcpClientWorker( this, clientSocket ) ).start();
+				TcpClientWorker clientWorker = new TcpClientWorker( this, clientSocket );
+
+				this.dispatchServerEvent( ServerEvent.createNewClient( clientWorker ) );
+
+				new Thread( clientWorker ).start();
 			}
 			catch ( IOException ioe )
 			{
@@ -213,10 +219,10 @@ public class TcpServer extends Server
 	/**
 	 * For the client worker threads to notify the server, who in turn will notify any listeners.
 	 * This is required because the client worker thread doesn't know who is listening to the server.
-	 * @param event Event from the client worker thread.
+	 * @param event InputEvent from the client worker thread.
 	 */
-	public void receiveEvent( Event event )
+	public void receiveEvent( InputEvent event )
 	{
-		this.dispatchEvent( event );
+		this.dispatchInputEvent(event);
 	}
 }
