@@ -9,7 +9,6 @@ public abstract class JsonButtonParser
 
 	public static final String KEY_X = "x";
 	public static final String KEY_Y = "y";
-	public static final String KEY_KEY_CODE = "keyCode";
 	public static final String KEY_TYPE = "type";
 
 	public static JsonButtonParser getParser( JSONObject json ) throws JSONException
@@ -18,6 +17,10 @@ public abstract class JsonButtonParser
 		if ( type.equals( ArcadeButtonParser.LABEL ) )
 		{
 			return new ArcadeButtonParser().setJson( json );
+		}
+		else if ( type.equals( DPadButtonParser.LABEL ) )
+		{
+			return new DPadButtonParser().setJson( json );
 		}
 		else
 		{
@@ -42,9 +45,8 @@ public abstract class JsonButtonParser
 	 */
 	protected void parseBaseProperties( AbstractButton button ) throws JSONException
 	{
-		button.setX( json.getInt( KEY_X ) );
-		button.setY( json.getInt( KEY_Y ) );
-		button.setKeyCode( json.getInt( KEY_KEY_CODE ) );
+		button.setX(json.getInt(KEY_X));
+		button.setY(json.getInt(KEY_Y));
 	}
 
 }

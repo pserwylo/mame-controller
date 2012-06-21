@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import com.serwylo.mame.controller.client.android.R;
 import com.serwylo.mame.controller.client.android.controllers.buttons.AbstractButton;
 import com.serwylo.mame.controller.client.android.controllers.buttons.ArcadeButton;
+import com.serwylo.mame.controller.client.android.controllers.buttons.DPadButton;
 
 public class ButtonUiFactory
 {
@@ -24,6 +25,10 @@ public class ButtonUiFactory
 		{
 			return ButtonUiFactory.createArcadeButton( context, (ArcadeButton)button );
 		}
+		else if ( button.getClass() == DPadButton.class )
+		{
+			return ButtonUiFactory.createDPadButton( context, (DPadButton)button );
+		}
 
 		throw new IllegalArgumentException( "Button UI element does not exist for '" + button.getClass().getCanonicalName() + "'" );
 	}
@@ -31,8 +36,14 @@ public class ButtonUiFactory
 	public static ArcadeButtonView createArcadeButton( Context context, ArcadeButton button )
 	{
 		ArcadeButtonView btnView = new ArcadeButtonView( context );
-		btnView.setButton( button );
+		btnView.setButton(button);
+		return btnView;
+	}
 
+	public static DpadButtonView createDPadButton( Context context, DPadButton button )
+	{
+		DpadButtonView btnView = new DpadButtonView( context );
+		btnView.setButton( button );
 		return btnView;
 	}
 

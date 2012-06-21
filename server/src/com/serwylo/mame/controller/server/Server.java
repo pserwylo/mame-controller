@@ -5,6 +5,7 @@ import com.serwylo.mame.controller.server.events.IServerEventListener;
 import com.serwylo.mame.controller.server.events.ServerEvent;
 import com.serwylo.mame.controller.shared.InputEvent;
 
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public abstract class Server implements Runnable

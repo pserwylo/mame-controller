@@ -31,11 +31,27 @@ public class MameRobot
 			switch( event.getType() )
 			{
 				case InputEvent.TYPE_KEY_DOWN:
-					robot.keyPress( event.getKeyCode() );
+					try
+					{
+						robot.keyPress( event.getKeyCode() );
+					}
+					catch ( IllegalArgumentException iae )
+					{
+						System.err.println( "Error pressing key code: " + event.getKeyCode() );
+						System.err.println( iae.getMessage() );
+					}
 					break;
 
 				case InputEvent.TYPE_KEY_UP:
-					robot.keyRelease( event.getKeyCode() );
+					try
+					{
+						robot.keyRelease( event.getKeyCode() );
+					}
+					catch ( IllegalArgumentException iae )
+					{
+						System.err.println( "Error releasing key code: " + event.getKeyCode() );
+						System.err.println( iae.getMessage() );
+					}
 					break;
 			}
 		}

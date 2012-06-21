@@ -85,6 +85,7 @@ public class ControllerManager
 		JSONObject json = new JSONObject( fileContents );
 
 		String label = json.getString( "label" );
+		String orientation = json.has( "orientation") ? json.getString( "orientation" ) : ControllerDefinition.ORIENTATION_PORTRAIT;
 		JSONArray buttons = json.getJSONArray( "buttons" );
 		ArrayList<AbstractButton> buttonList = new ArrayList<AbstractButton>( buttons.length() );
 		for ( int i = 0; i < buttons.length(); i ++ )
@@ -93,8 +94,9 @@ public class ControllerManager
 		}
 
 		ControllerDefinition controller = new ControllerDefinition();
-		controller.setButtonList( buttonList );
 		controller.setLabel( label );
+		controller.setButtonList( buttonList );
+		controller.setOrientation( orientation );
 
 		return controller;
 	}

@@ -7,12 +7,13 @@ import java.util.ArrayList;
 public class ControllerDefinition
 {
 
-	public static final int LAYOUT_HORIZONTAL = 1;
-	public static final int LAYOUT_VERTICAL = 2;
+	public static final String ORIENTATION_LANDSCAPE = "landscape";
+	public static final String ORIENTATION_PORTRAIT = "portrait";
 
 	private ArrayList<AbstractButton> buttonList;
 	private String label;
 	private int layout;
+	private String orientation;
 
 	public ControllerDefinition()
 	{
@@ -41,4 +42,13 @@ public class ControllerDefinition
 		return this;
 	}
 
+	public String getOrientation()
+	{
+		return orientation;
+	}
+
+	public void setOrientation( String orientation )
+	{
+		this.orientation = orientation;
+	}
 }

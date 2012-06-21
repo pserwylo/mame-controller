@@ -43,26 +43,24 @@ public class ArcadeButtonView extends ButtonView<ArcadeButton>
 		image.setColorFilter( new LightingColorFilter( button.getColour(), 1 ) );
 		btnView.setImageDrawable( image );
 		btnView.setBackgroundColor( Color.TRANSPARENT );
-		btnView.setOnTouchListener( new OnTouchListener()
-		{
-			@Override
-			public boolean onTouch( View v, MotionEvent event )
-			{
-				if ( event.getAction() == MotionEvent.ACTION_DOWN )
-				{
-					buttonDown( ArcadeButtonView.this.getButton().getKeyCode() );
-				}
-				else if ( event.getAction() == MotionEvent.ACTION_UP )
-				{
-					buttonUp( ArcadeButtonView.this.getButton().getKeyCode() );
-				}
-				return false;
-			}
-		});
-
 		this.addView( btnView );
 
 		this.setLayoutParams( new AbsoluteLayout.LayoutParams( image.getMinimumWidth(), image.getMinimumHeight(), button.getX(), button.getY() ) );
+	}
+
+	@Override
+	public boolean onTouchEvent( MotionEvent event )
+	{
+		if ( event.getAction() == MotionEvent.ACTION_DOWN )
+		{
+			buttonDown( ArcadeButtonView.this.getButton().getKeyCode() );
+		}
+		else if ( event.getAction() == MotionEvent.ACTION_UP )
+		{
+			buttonUp( ArcadeButtonView.this.getButton().getKeyCode() );
+		}
+
+		return super.onTouchEvent( event );
 	}
 
 }

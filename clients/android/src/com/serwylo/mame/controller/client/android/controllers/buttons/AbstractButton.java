@@ -5,7 +5,6 @@ public abstract class AbstractButton
 
 	private int x;
 	private int y;
-	private int keyCode;
 
 	public int getX()
 	{
@@ -27,13 +26,4 @@ public abstract class AbstractButton
 		this.y = y;
 	}
 
-	public int getKeyCode()
-	{
-		return keyCode;
-	}
-
-	public void setKeyCode( int keyCode )
-	{
-		this.keyCode = keyCode;
-	}
 }

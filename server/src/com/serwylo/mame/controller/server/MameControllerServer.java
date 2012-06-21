@@ -33,6 +33,7 @@ public class MameControllerServer implements IInputEventListener
 	public MameControllerServer()
 	{
 		this.tcpBridge = new TcpServerAppBridge( new TcpServer() );
+		this.tcpBridge.getServer().addInputEventListener( this );
 		this.availableServers.add( this.tcpBridge );
 	}
 

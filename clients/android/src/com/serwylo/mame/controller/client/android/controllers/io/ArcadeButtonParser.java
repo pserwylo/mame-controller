@@ -9,14 +9,16 @@ public class ArcadeButtonParser extends JsonButtonParser
 
 	public static String LABEL = "arcade";
 
-	public static String KEY_COLOUR = "colour";
+	public static String COLOUR = "colour";
+	public static final String KEY_CODE = "keyCode";
 
 	@Override
 	public AbstractButton parse() throws JSONException
 	{
 		ArcadeButton button = new ArcadeButton();
 		this.parseBaseProperties( button );
-		button.setColour( this.json.getInt( KEY_COLOUR ) );
+		button.setColour( this.json.getInt( COLOUR ) );
+		button.setKeyCode( this.json.getInt( KEY_CODE ) );
 		return button;
 	}
 

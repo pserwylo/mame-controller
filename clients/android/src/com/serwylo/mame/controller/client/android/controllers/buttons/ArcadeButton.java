@@ -1,11 +1,10 @@
 package com.serwylo.mame.controller.client.android.controllers.buttons;
 
-import android.graphics.Color;
-
 public class ArcadeButton extends AbstractButton
 {
 
 	private int colour;
+	private int keyCode;
 
 	public int getColour()
 	{
@@ -15,5 +14,15 @@ public class ArcadeButton extends AbstractButton
 	public void setColour( int colour )
 	{
 		this.colour = colour;
+	}
+
+	public int getKeyCode()
+	{
+		return keyCode;
+	}
+
+	public void setKeyCode( int keyCode )
+	{
+		this.keyCode = keyCode;
 	}
 }
