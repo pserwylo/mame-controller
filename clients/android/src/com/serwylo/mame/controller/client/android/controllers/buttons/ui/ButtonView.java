@@ -17,9 +17,9 @@ import com.serwylo.mame.controller.client.android.controllers.buttons.AbstractBu
 public abstract class ButtonView<ButtonType extends AbstractButton> extends RelativeLayout
 {
 
-	private ButtonType button;
+	public static final int NO_KEY_CODE = -1;
 
-	protected IButtonPressListener buttonPressListener;
+	private ButtonType button;
 
 	public ButtonView( Context context )
 	{
@@ -36,26 +36,15 @@ public abstract class ButtonView<ButtonType extends AbstractButton> extends Rela
 		super( context, attrs, defStyle );
 	}
 
-	public void setButtonPressListener( IButtonPressListener listener )
-	{
-		this.buttonPressListener = listener;
-	}
-
-	protected void buttonDown( int keyCode )
-	{
-		if ( this.buttonPressListener != null )
-		{
-			this.buttonPressListener.onButtonDown( keyCode );
-		}
-	}
-
-	protected void buttonUp( int keyCode )
-	{
-		if ( this.buttonPressListener != null )
-		{
-			this.buttonPressListener.onButtonUp( keyCode );
-		}
-	}
+	/**
+	 * Some buttons may provide more than one keycode, in which case we want to be able to query the button for the
+	 * keycode at a specific location. This can also give us a more accurate hit detection, for example, for round buttons.
+	 * That is, if you don't want to return a keycode, just return {@link ButtonView#NO_KEY_CODE}.
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public abstract int getKeyCode( int x, int y );
 
 	public void setButton( ButtonType button )
 	{

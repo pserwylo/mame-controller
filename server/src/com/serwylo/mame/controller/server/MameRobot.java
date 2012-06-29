@@ -33,6 +33,7 @@ public class MameRobot
 				case InputEvent.TYPE_KEY_DOWN:
 					try
 					{
+						System.out.println( "Pressing: " + event.getKeyCode() );
 						robot.keyPress( event.getKeyCode() );
 					}
 					catch ( IllegalArgumentException iae )
@@ -45,6 +46,7 @@ public class MameRobot
 				case InputEvent.TYPE_KEY_UP:
 					try
 					{
+						System.out.println( "Releasing: " + event.getKeyCode() );
 						robot.keyRelease( event.getKeyCode() );
 					}
 					catch ( IllegalArgumentException iae )

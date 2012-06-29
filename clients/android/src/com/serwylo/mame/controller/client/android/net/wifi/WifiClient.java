@@ -151,7 +151,7 @@ public class WifiClient extends NetworkClient
 	 */
 	public void sendEvent( InputEvent event )
 	{
-		System.err.println( "Sending to server: '" + event.toString() + "'" );
+		Log.d( "MAME", "Sending to server: '" + event.toString() + "'" );
 		this.output.write( event.toString() );
 		this.output.flush();
 	}
@@ -163,6 +163,7 @@ public class WifiClient extends NetworkClient
 		{
 			if ( this.output != null )
 			{
+				// TODO: I don't think this is even necessary, they will find out when I close anyway...
 				this.sendEvent( InputEvent.createCloseEvent() );
 				this.output.close();
 			}

@@ -48,75 +48,59 @@ public class DpadButtonView extends ButtonView<DPadButton>
 		this.setLayoutParams( new AbsoluteLayout.LayoutParams( image.getMinimumWidth(), image.getMinimumHeight(), button.getX(), button.getY() ) );
 	}
 
-	@Override
-	public boolean onTouchEvent( MotionEvent event )
+	public int getKeyCode( int x, int y )
 	{
-		if ( event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_UP )
+		int xIndex = x * 3 / this.getLayoutParams().width;
+		int yIndex = y * 3 / this.getLayoutParams().height;
+
+		int keyCode = NO_KEY_CODE;
+		if ( yIndex == 0 )
 		{
-			int x = (int)( event.getX() * 3 / this.getLayoutParams().width );
-			int y = (int)( event.getY() * 3 / this.getLayoutParams().height );
-
-			int keyCode = -1;
-			if ( y == 0 )
+			if ( xIndex == 0 )
 			{
-				if ( x == 0 )
-				{
-					keyCode = this.getButton().getKeyCodeUpLeft();
-				}
-				else if ( x == 1 )
-				{
-					keyCode = this.getButton().getKeyCodeUp();
-				}
-				else if ( x == 2 )
-				{
-					keyCode = this.getButton().getKeyCodeUpRight();
-				}
+				keyCode = this.getButton().getKeyCodeUpLeft();
 			}
-			else if ( y == 1 )
+			else if ( xIndex == 1 )
 			{
-				if ( x == 0 )
-				{
-					keyCode = this.getButton().getKeyCodeLeft();
-				}
-				else if ( x == 1 )
-				{
-					// do nothing...
-				}
-				else if ( x == 2 )
-				{
-					keyCode = this.getButton().getKeyCodeRight();
-				}
+				keyCode = this.getButton().getKeyCodeUp();
 			}
-			else if ( y == 2 )
+			else if ( xIndex == 2 )
 			{
-				if ( x == 0 )
-				{
-					keyCode = this.getButton().getKeyCodeDownLeft();
-				}
-				else if ( x == 1 )
-				{
-					keyCode = this.getButton().getKeyCodeDown();
-				}
-				else if ( x == 2 )
-				{
-					keyCode = this.getButton().getKeyCodeDownRight();
-				}
+				keyCode = this.getButton().getKeyCodeUpRight();
 			}
-
-			if ( keyCode >= 0 )
+		}
+		else if ( yIndex == 1 )
+		{
+			if ( xIndex == 0 )
 			{
-				if ( event.getAction() == MotionEvent.ACTION_DOWN )
-				{
-					this.buttonDown( keyCode );
-				}
-				else if ( event.getAction() == MotionEvent.ACTION_UP )
-				{
-					this.buttonUp( keyCode );
-				}
+				keyCode = this.getButton().getKeyCodeLeft();
+			}
+			else if ( xIndex == 1 )
+			{
+				// do nothing...
+			}
+			else if ( xIndex == 2 )
+			{
+				keyCode = this.getButton().getKeyCodeRight();
+			}
+		}
+		else if ( yIndex == 2 )
+		{
+			if ( xIndex == 0 )
+			{
+				keyCode = this.getButton().getKeyCodeDownLeft();
+			}
+			else if ( xIndex == 1 )
+			{
+				keyCode = this.getButton().getKeyCodeDown();
+			}
+			else if ( xIndex == 2 )
+			{
+				keyCode = this.getButton().getKeyCodeDownRight();
 			}
 		}
 
-		return super.onTouchEvent( event );
+		return keyCode;
 	}
 
 }

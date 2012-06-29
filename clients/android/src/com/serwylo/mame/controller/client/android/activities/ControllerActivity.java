@@ -114,45 +114,69 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
 
 	private void onButtonDown( int keyCode )
 	{
-		Vibrator vibrator = (Vibrator)this.getSystemService( VIBRATOR_SERVICE );
-		if ( vibrator != null /* TODO: && preferences.getBoolean( "VIBRATE_ON_PRESS" ) */ )
-		{
-			vibrator.vibrate( 100 );
-		}
+		this.vibrate();
 		NetworkClient.getCurrent().sendEvent( InputEvent.createKeyDown( keyCode ) );
 	}
 
 	private void onButtonUp( int keyCode )
 	{
+		this.vibrate();
 		NetworkClient.getCurrent().sendEvent( InputEvent.createKeyUp( keyCode ) );
+	}
+
+	private void vibrate()
+	{
+		Vibrator vibrator = (Vibrator)this.getSystemService( VIBRATOR_SERVICE );
+		if ( vibrator != null /* TODO: && preferences.getBoolean( "VIBRATE_ON_PRESS" ) */ )
+		{
+			vibrator.vibrate( 50 );
+		}
 	}
 
 	@Override
 	public boolean onTouch( View v, MotionEvent event )
 	{
-		// if ( event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_UP )
+		if ( event.getAction() != MotionEvent.ACTION_MOVE )
 		{
 			Log.d( "MAME", "Event: " + event );
-			for ( ButtonView button : this.buttonViews )
-			{
-				if ( button.getLeft() < event.getX() && button.getRight() > event.getX() &&
-					button.getTop() < event.getY() && button.getBottom() > event.getY() )
-				{
-					Log.d( "MAME", "Button: " + button );
-					return button.onTouchEvent( event );
-					/*
-					if (
-							event.getAction() == MotionEvent.ACTION_DOWN ||
-							event.getAction() == MotionEvent.ACTION_POINTER_1_DOWN ||
-							event.getAction() == MotionEvent.ACTION_POINTER_2_DOWN ||
-							event.getAction() == MotionEvent.ACTION_POINTER_3_DOWN )
-					{
+		}
+		else
+		{
+			return true;
+		}
 
+		int eventX = (int)event.getX( event.getActionIndex() );
+		int eventY = (int)event.getY( event.getActionIndex() );
+
+		for ( ButtonView button : this.buttonViews )
+		{
+			if ( button.getLeft() < eventX && button.getRight() > eventX &&
+				button.getTop() < eventY && button.getBottom() > eventY )
+			{
+				int x = (int)( eventX - button.getLeft() );
+				int y = (int)( eventY - button.getTop() );
+				int keyCode = button.getKeyCode( x, y );
+				Log.d( "MAME", "At: [" + x + ", " + y + "] KeyCode: " + keyCode + ", Button: " + button.getClass().getSimpleName() );
+
+				if ( keyCode != ButtonView.NO_KEY_CODE )
+				{
+					switch ( event.getAction() & MotionEvent.ACTION_MASK )
+					{
+						case MotionEvent.ACTION_DOWN:
+						case MotionEvent.ACTION_POINTER_DOWN:
+							Log.d( "MAME", "Down" );
+							this.onButtonDown( keyCode );
+							break;
+
+						case MotionEvent.ACTION_UP:
+						case MotionEvent.ACTION_POINTER_UP:
+							Log.d( "MAME", "Up (" + x + ", " + y + ")" );
+							this.onButtonUp( keyCode );
+							break;
 					}
-					return true;*/
 				}
 			}
 		}
-		return false;
+		return true;
 	}
 }

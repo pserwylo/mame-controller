@@ -33,6 +33,26 @@ public class ArcadeButtonView extends ButtonView<ArcadeButton>
 		super( context, attrs, defStyle );
 	}
 
+	/**
+	 * Will do a check to see if the point is within the circle before returning the keyCode.
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public int getKeyCode( int x, int y )
+	{
+		int radius = this.getLayoutParams().width;
+
+		if ( radius * radius > x * x + y * y )
+		{
+			return this.getButton().getKeyCode();
+		}
+		else
+		{
+			return NO_KEY_CODE;
+		}
+	}
+
 	@Override
 	public void setButton( ArcadeButton button )
 	{
@@ -46,21 +66,6 @@ public class ArcadeButtonView extends ButtonView<ArcadeButton>
 		this.addView( btnView );
 
 		this.setLayoutParams( new AbsoluteLayout.LayoutParams( image.getMinimumWidth(), image.getMinimumHeight(), button.getX(), button.getY() ) );
-	}
-
-	@Override
-	public boolean onTouchEvent( MotionEvent event )
-	{
-		if ( event.getAction() == MotionEvent.ACTION_DOWN )
-		{
-			buttonDown( ArcadeButtonView.this.getButton().getKeyCode() );
-		}
-		else if ( event.getAction() == MotionEvent.ACTION_UP )
-		{
-			buttonUp( ArcadeButtonView.this.getButton().getKeyCode() );
-		}
-
-		return super.onTouchEvent( event );
 	}
 
 }

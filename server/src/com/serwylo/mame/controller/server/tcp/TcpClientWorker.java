@@ -58,6 +58,11 @@ public class TcpClientWorker extends NetworkClientWorker implements Runnable
 
 			this.dispatchClientEvent(ClientEvent.createClientDisconnected( this.clientSocket.getInetAddress().getHostName(), ioe ) );
 		}
+		finally
+		{
+			// TODO: Listen to all keyPress events, and if there is not a corresponding keyRelease event, then dispatch
+			// that now...
+		}
 
 	}
 
