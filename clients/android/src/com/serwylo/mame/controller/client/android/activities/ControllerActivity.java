@@ -176,6 +176,7 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
 					}
 				}
 			}
+
 		}
 		return true;
 	}

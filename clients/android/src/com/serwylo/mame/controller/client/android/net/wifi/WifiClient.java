@@ -3,6 +3,7 @@ package com.serwylo.mame.controller.client.android.net.wifi;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 import com.serwylo.mame.controller.client.android.net.ConnectionEvent;
@@ -93,7 +94,7 @@ public class WifiClient extends NetworkClient
 				}
 
 				// Local address, should have wifi enabled to correctly route to this address...
-				if ( address.isSiteLocalAddress() )
+				if ( false && address.isSiteLocalAddress() )
 				{
 					WifiManager wifiManager = (WifiManager)context.getSystemService( Context.WIFI_SERVICE );
 					if ( !wifiManager.isWifiEnabled() )

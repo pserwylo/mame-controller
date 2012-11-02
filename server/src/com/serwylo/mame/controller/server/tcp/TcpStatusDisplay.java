@@ -11,10 +11,13 @@ import com.serwylo.mame.controller.server.events.IClientEventListener;
 import com.serwylo.mame.controller.server.events.IServerEventListener;
 import com.serwylo.mame.controller.server.events.ServerEvent;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Displays the status of the server:
@@ -37,8 +40,6 @@ public class TcpStatusDisplay extends StatusDisplay implements IServerEventListe
 
 	private JPanel connectedPanel;
 	private JLabel labelConnectedClients;
-
-	private int connectedClients = 0;
 
 	public TcpStatusDisplay( TcpServer server)
 	{
@@ -64,7 +65,7 @@ public class TcpStatusDisplay extends StatusDisplay implements IServerEventListe
 		this.qrPanel.setBorder(new LineBorder(Color.LIGHT_GRAY, 3));
 
 		Font headingFont = new Font( "Monospaced", Font.BOLD, 14 );
-		this.labelConnect = new JLabel( "Connect", JLabel.CENTER );
+		this.labelConnect = new JLabel( "Scan to Connect", JLabel.CENTER );
 		this.labelConnect.setFont( headingFont );
 		this.qrPanel.add(this.labelConnect, BorderLayout.NORTH);
 
@@ -113,9 +114,13 @@ public class TcpStatusDisplay extends StatusDisplay implements IServerEventListe
 	@Override
 	public void onServerEvent( ServerEvent event )
 	{
-		if ( event.getType() == ServerEvent.TYPE_NEW_CLIENT )
+		if ( event.getType() == ServerEvent.TYPE_SERVER_CONNECTED )
 		{
-			System.out.println( "New client: " + event );
+			System.out.println( "[TcpStatusDisplay] Server connected: " + event );
+		}
+		else if ( event.getType() == ServerEvent.TYPE_NEW_CLIENT )
+		{
+			System.out.println( "[TcpStatusDisplay] New client: " + event );
 			event.getClient().addClientEventListener( this );
 		}
 	}
@@ -125,17 +130,15 @@ public class TcpStatusDisplay extends StatusDisplay implements IServerEventListe
 	{
 		if ( event.getType() == ClientEvent.TYPE_CLIENT_CONNECTED )
 		{
-			System.out.println( "Client connected: " + event );
-			this.connectedClients ++;
+			System.out.println( "[TcpStatusDisplay] Client connected: " + event );
 		}
 		else if ( event.getType() == ClientEvent.TYPE_CLIENT_DISCONNECTED )
 		{
-			System.out.println( "Client disconnected: " + event );
-			this.connectedClients --;
+			System.out.println( "[TcpStatusDisplay] Client disconnected: " + event );
 		}
 
 		// TODO: Based on settings, either remove completely, don't change anything, or show status when clients connected...
-		boolean hasClients = this.connectedClients > 0;
+		boolean hasClients = event.getConnectedClients() > 0;
 		if ( false /* remove completely */ )
 		{
 			this.setVisible( !hasClients );
@@ -146,15 +149,15 @@ public class TcpStatusDisplay extends StatusDisplay implements IServerEventListe
 		}
 		else if ( true /* remove connection info, show connected clients */ )
 		{
-			this.removeAll();
 			if ( hasClients )
 			{
-				this.add( this.connectedPanel );
+				this.labelConnect.setText( event.getConnectedClients() + " Connected" );
 			}
 			else
 			{
-				this.add( this.qrPanel );
+				this.labelConnect.setText( "Scan to Connect" );
 			}
+			this.dumpImage();
 		}
 	}
 }

@@ -1,7 +1,13 @@
 package com.serwylo.mame.controller.server;
 
+import com.serwylo.mame.controller.server.utils.Properties;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class StatusDisplay extends JFrame
@@ -15,6 +21,31 @@ public class StatusDisplay extends JFrame
 		this.setAlwaysOnTop( true );
 	}
 
+	protected void dumpImage()
+	{
+		if ( Properties.getInstance().getStatusOutputPath() != null )
+		{
+			String tempDir = System.getProperty( "java.io.tmpdir" );
+			BufferedImage bi = new BufferedImage( this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB );
+			Graphics g = bi.getGraphics();
+
+			boolean v = this.isVisible();
+			this.setVisible( true );
+			this.getContentPane().paint( g );
+			this.setVisible( v );
+
+			try
+			{
+				System.out.println( "Dumping image to '" + Properties.getInstance().getStatusOutputPath() );
+				ImageIO.write( bi, "png", new File( Properties.getInstance().getStatusOutputPath() ) );
+			}
+			catch ( IOException ioe )
+			{
+				System.err.println( ioe.getMessage() );
+			}
+		}
+	}
+
 	/**
 	 * Keeps track of status displays, so that we can position them appropriately.
 	 */
@@ -22,6 +53,7 @@ public class StatusDisplay extends JFrame
 	{
 		displays.add( display );
 		layoutDisplays();
+		display.dumpImage();
 	}
 
 	/**
@@ -29,13 +61,16 @@ public class StatusDisplay extends JFrame
 	 */
 	public static void layoutDisplays()
 	{
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int startY = (int)screenSize.getHeight();
-		for ( StatusDisplay display : displays )
+		if ( Properties.getInstance().getShowGuiStatus() )
 		{
-			display.setLocation( (int)( screenSize.getWidth() - display.getWidth() ), ( startY - display.getHeight() ) );
-			display.setVisible( true );
-			startY += display.getHeight();
+			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+			int startY = (int)screenSize.getHeight();
+			for ( StatusDisplay display : displays )
+			{
+				display.setVisible( true );
+				display.setLocation( (int)( screenSize.getWidth() - display.getWidth() ), ( startY - display.getHeight() ) );
+				startY += display.getHeight();
+			}
 		}
 	}
 

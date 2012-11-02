@@ -1,40 +1,39 @@
 package com.serwylo.mame.controller.server;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.TimerTask;
 
-import com.serwylo.mame.controller.server.events.IInputEventListener;
-import com.serwylo.mame.controller.server.events.ServerEvent;
+import com.serwylo.mame.controller.server.events.*;
 import com.serwylo.mame.controller.server.tcp.TcpServer;
 import com.serwylo.mame.controller.server.tcp.TcpServerAppBridge;
+import com.serwylo.mame.controller.server.utils.Properties;
 import com.serwylo.mame.controller.shared.InputEvent;
 import org.apache.commons.cli.*;
+
+import javax.swing.*;
 
 /**
  * Listens for requests from clients, and then receives input and passes it to a {@link java.awt.Robot}.
  * Displays the QrCode to connect to the server from the phone.
  * This will stay here as long as no clients are connected. The default behaviour will be to remove the status screen
- * when a client connects. But we should also give the client the option to show it again so multiple clients can 
+ * when a client connects. But we should also give the client the option to show it again so multiple clients can
  * connect. Finally, when the client disconnects, we will show the status again.
  */
-public class MameControllerServer implements IInputEventListener
+public class MameControllerServer implements IInputEventListener, IServerEventListener, IClientEventListener
 {
 
-	private boolean bluetooth = false;
-	private boolean wifi = false;
-	private InetAddress ipaddress = null;
-	private int port = 57368;
-	private boolean showGuiStatus = true;
-
 	private ArrayList<ServerAppBridge> availableServers = new ArrayList<ServerAppBridge>();
-
-	private TcpServerAppBridge tcpBridge;
+	private ExecManager execManager;
 
 	public MameControllerServer()
 	{
-		this.tcpBridge = new TcpServerAppBridge( new TcpServer() );
-		this.tcpBridge.getServer().addInputEventListener( this );
-		this.availableServers.add( this.tcpBridge );
+		TcpServerAppBridge tcpBridge = new TcpServerAppBridge( new TcpServer() );
+		tcpBridge.getServer().addInputEventListener( this );
+		tcpBridge.getServer().addServerEventListener( this );
+		this.availableServers.add( tcpBridge );
 	}
 
 	public void run( String[] args )
@@ -58,8 +57,10 @@ public class MameControllerServer implements IInputEventListener
 	public void parseArgs( String[] args )
 	{
 		Options options = new Options();
-		options.addOption( "b", "bluetooth", false, "Start bluetooth server" );
-		options.addOption( "g", "nogui", false, "Don't show gui status window" );
+		options.addOption( "g", "status-gui", false, "Show the status in a GUI window in the bottom right of the screen" );
+		options.addOption( "s", "status-output", true, "Path to (png) file to dump status window to" );
+		options.addOption( "x", "exec", true, "The executable command to run once clients are connected" );
+		options.addOption( "t", "wait-time", true, "Amount of time to wait after the first client is connected before running exec" );
 
 		for ( ServerAppBridge serverBridge : this.availableServers )
 		{
@@ -74,13 +75,20 @@ public class MameControllerServer implements IInputEventListener
 		{
 			CommandLineParser parser = new PosixParser();
 			line = parser.parse( options, args );
-			this.bluetooth = line.hasOption( 'b' );
-			this.showGuiStatus = !line.hasOption( 'g' );
+			boolean showGuiStatus = !line.hasOption( 'g' );
+			String statusOutputPath = line.hasOption( 's' ) ? line.getOptionValue( 's' ) : null;
+			String executable = line.hasOption( 'x' ) ? line.getOptionValue( 'x' ) : null;
+			int waitTime = line.hasOption( 't' ) ? Integer.parseInt( line.getOptionValue( 't' ) ) : 0;
+
+			// Make these properties available globally...
+			Properties.setup( showGuiStatus, statusOutputPath, executable, waitTime );
 
 			for ( ServerAppBridge serverBridge : this.availableServers )
 			{
 				serverBridge.parseCommandLine( line );
 			}
+
+			this.execManager = ExecManager.create( executable );
 		}
 		catch ( ParseException pe )
 		{
@@ -100,6 +108,55 @@ public class MameControllerServer implements IInputEventListener
 		else
 		{
 			MameRobot.getInstance().processEvent( event );
+		}
+	}
+
+	/**
+	 * Look for client connect/disconnect events and tell the execManager to do the appropriate thing in response.
+	 * @param event
+	 */
+	@Override
+	public void onServerEvent( ServerEvent event )
+	{
+		if ( event.getType() == ServerEvent.TYPE_NEW_CLIENT )
+		{
+			event.getClient().addClientEventListener( this );
+		}
+	}
+
+	@Override
+	public void onClientEvent( ClientEvent event )
+	{
+		if ( event.getType() == ClientEvent.TYPE_CLIENT_CONNECTED )
+		{
+			if ( !this.execManager.isRunning() )
+			{
+				if ( Properties.getInstance().getWaitTime() > 0 )
+				{
+					System.out.println( "Waiting " + Properties.getInstance().getWaitTime() + " milliseconds before running exe..." );
+					Timer timer = new Timer( Properties.getInstance().getWaitTime(), new ActionListener()
+					{
+						@Override
+						public void actionPerformed( ActionEvent actionEvent )
+						{
+							execManager.start();
+						}
+					});
+					timer.setRepeats( false );
+					timer.start();
+				}
+				else
+				{
+					this.execManager.start();
+				}
+			}
+		}
+		else if ( event.getType() == ClientEvent.TYPE_CLIENT_DISCONNECTED )
+		{
+			if ( this.execManager.isRunning() )
+			{
+				this.execManager.stop();
+			}
 		}
 	}
 

@@ -12,6 +12,7 @@ import java.net.Socket;
 public class TcpClientWorker extends NetworkClientWorker implements Runnable
 {
 
+	protected static int connectedClients = 0;
 	protected TcpServer server;
 	protected Socket clientSocket;
 
@@ -24,7 +25,8 @@ public class TcpClientWorker extends NetworkClientWorker implements Runnable
 	@Override
 	public void run()
 	{
-		this.dispatchClientEvent(ClientEvent.createClientConnected( this.clientSocket.getInetAddress().getHostName() ) );
+		TcpClientWorker.connectedClients ++;
+		this.dispatchClientEvent( ClientEvent.createClientConnected( this.clientSocket.getInetAddress().getHostName(), connectedClients ) );
 
 		try
 		{
@@ -49,14 +51,16 @@ public class TcpClientWorker extends NetworkClientWorker implements Runnable
 			input.close();
 			this.clientSocket.close();
 
-			this.dispatchClientEvent( ClientEvent.createClientDisconnected( this.clientSocket.getInetAddress().getHostName() ) );
+			TcpClientWorker.connectedClients --;
+			this.dispatchClientEvent( ClientEvent.createClientDisconnected( this.clientSocket.getInetAddress().getHostName(), connectedClients ) );
 		}
 		catch ( IOException ioe )
 		{
 			System.err.println( "Error with client socket:" );
 			System.err.println( ioe.getMessage() );
 
-			this.dispatchClientEvent(ClientEvent.createClientDisconnected( this.clientSocket.getInetAddress().getHostName(), ioe ) );
+			TcpClientWorker.connectedClients --;
+			this.dispatchClientEvent(ClientEvent.createClientDisconnected( this.clientSocket.getInetAddress().getHostName(), ioe, connectedClients ) );
 		}
 		finally
 		{
