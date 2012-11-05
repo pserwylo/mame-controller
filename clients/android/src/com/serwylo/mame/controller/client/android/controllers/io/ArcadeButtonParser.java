@@ -4,6 +4,8 @@ import com.serwylo.mame.controller.client.android.controllers.buttons.AbstractBu
 import com.serwylo.mame.controller.client.android.controllers.buttons.ArcadeButton;
 import org.json.JSONException;
 
+import java.util.ArrayList;
+
 public class ArcadeButtonParser extends JsonButtonParser
 {
 
@@ -13,13 +15,16 @@ public class ArcadeButtonParser extends JsonButtonParser
 	public static final String KEY_CODE = "keyCode";
 
 	@Override
-	public AbstractButton parse() throws JSONException
+	public ArrayList<AbstractButton> parse() throws JSONException
 	{
 		ArcadeButton button = new ArcadeButton();
 		this.parseBaseProperties( button );
 		button.setColour( this.json.getInt( COLOUR ) );
 		button.setKeyCode( this.json.getInt( KEY_CODE ) );
-		return button;
+
+		ArrayList<AbstractButton> buttons = new ArrayList<AbstractButton>( 1 );
+		buttons.add( button );
+		return buttons;
 	}
 
 }

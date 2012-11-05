@@ -4,6 +4,8 @@ import com.serwylo.mame.controller.client.android.controllers.buttons.AbstractBu
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public abstract class JsonButtonParser
 {
 
@@ -36,7 +38,14 @@ public abstract class JsonButtonParser
 		return this;
 	}
 
-	public abstract AbstractButton parse() throws JSONException;
+	/**
+	 * Initially, this just parsed a single button an returned it, but it turns out that its much easier to model
+	 * controllers if we incorporate composite buttons, which are just declared once in the ctrl file, but actually
+	 * represent several buttons.As such, we return multiple buttons, even though this will often only be one button.
+	 * @return
+	 * @throws JSONException
+	 */
+	public abstract ArrayList<AbstractButton> parse() throws JSONException;
 
 	/**
 	 * Parses all of the KEY_* properties declared in {@link JsonButtonParser} from the {@link JsonButtonParser#json}
@@ -45,8 +54,8 @@ public abstract class JsonButtonParser
 	 */
 	protected void parseBaseProperties( AbstractButton button ) throws JSONException
 	{
-		button.setX(json.getInt(KEY_X));
-		button.setY(json.getInt(KEY_Y));
+		button.setX( json.getInt( KEY_X ) );
+		button.setY( json.getInt( KEY_Y ) );
 	}
 
 }

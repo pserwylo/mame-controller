@@ -17,4 +17,5 @@ public class ViewConnectionsActivity extends Activity
 	{
 		super.onCreate( savedInstanceState );
 	}
+
 }

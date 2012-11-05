@@ -90,7 +90,7 @@ public class ControllerManager
 		ArrayList<AbstractButton> buttonList = new ArrayList<AbstractButton>( buttons.length() );
 		for ( int i = 0; i < buttons.length(); i ++ )
 		{
-			buttonList.add( JsonButtonParser.getParser( buttons.getJSONObject( i ) ).parse() );
+			buttonList.addAll( JsonButtonParser.getParser( buttons.getJSONObject( i ) ).parse() );
 		}
 
 		ControllerDefinition controller = new ControllerDefinition();

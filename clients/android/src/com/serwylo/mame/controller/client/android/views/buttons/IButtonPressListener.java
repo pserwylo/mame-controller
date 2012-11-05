@@ -1,4 +1,4 @@
-package com.serwylo.mame.controller.client.android.controllers.buttons.ui;
+package com.serwylo.mame.controller.client.android.views.buttons;
 
 public interface IButtonPressListener
 {

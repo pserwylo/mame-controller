@@ -1,9 +1,12 @@
 package com.serwylo.mame.controller.client.android.controllers.io;
 
+import android.graphics.BitmapFactory;
 import com.serwylo.mame.controller.client.android.controllers.buttons.AbstractButton;
 import com.serwylo.mame.controller.client.android.controllers.buttons.ArcadeButton;
 import com.serwylo.mame.controller.client.android.controllers.buttons.DPadButton;
 import org.json.JSONException;
+
+import java.util.ArrayList;
 
 public class DPadButtonParser extends JsonButtonParser
 {
@@ -18,60 +21,91 @@ public class DPadButtonParser extends JsonButtonParser
 	public static String KEY_CODE_UP_RIGHT = "keyCodeUpRight";
 	public static String KEY_CODE_DOWN_LEFT = "keyCodeDownLeft";
 	public static String KEY_CODE_DOWN_RIGHT = "keyCodeDownRight";
-	public static String ENABLE_DIAGONAL = "enableDiagonal";
+	public static String KEY_ENABLE_DIAGONAL = "enableDiagonal";
 
 	@Override
-	public AbstractButton parse() throws JSONException
+	public ArrayList<AbstractButton> parse() throws JSONException
 	{
-		DPadButton button = new DPadButton();
-		this.parseBaseProperties(button);
+		ArrayList<AbstractButton> buttons = new ArrayList<AbstractButton>( 8 );
+
+		int x = this.json.getInt( KEY_X );
+		int y = this.json.getInt( KEY_Y );
+
+		DPadButton.Up up = new DPadButton.Up();
+		DPadButton.Right right = new DPadButton.Right();
+		DPadButton.Down down = new DPadButton.Down();
+		DPadButton.Left left = new DPadButton.Left();
+
+		this.parseBaseProperties( up );
+		this.parseBaseProperties( right );
+		this.parseBaseProperties( down );
+		this.parseBaseProperties( left );
+
+		buttons.add( up );
+		buttons.add( right );
+		buttons.add( down );
+		buttons.add( left );
 
 		if ( this.json.has( KEY_CODE_LEFT ) )
 		{
-			button.setKeyCodeLeft( this.json.getInt( KEY_CODE_LEFT ) );
+			left.setKeyCode( this.json.getInt( KEY_CODE_LEFT ) );
 		}
 
 		if ( this.json.has( KEY_CODE_RIGHT ) )
 		{
-			button.setKeyCodeRight( this.json.getInt( KEY_CODE_RIGHT ) );
+			right.setKeyCode( this.json.getInt( KEY_CODE_RIGHT ) );
 		}
 
 		if ( this.json.has( KEY_CODE_UP ) )
 		{
-			button.setKeyCodeUp( this.json.getInt( KEY_CODE_UP ) );
+			up.setKeyCode( this.json.getInt( KEY_CODE_UP ) );
 		}
 
 		if ( this.json.has( KEY_CODE_DOWN ) )
 		{
-			button.setKeyCodeDown( this.json.getInt( KEY_CODE_DOWN ) );
+			down.setKeyCode( this.json.getInt( KEY_CODE_DOWN ) );
 		}
 
-		if ( this.json.has( KEY_CODE_UP_LEFT ) )
+		if ( !this.json.has( KEY_ENABLE_DIAGONAL ) || this.json.getBoolean( KEY_ENABLE_DIAGONAL ) )
 		{
-			button.setKeyCodeUpLeft( this.json.getInt( KEY_CODE_UP_LEFT ) );
+			DPadButton.UpLeft upLeft = new DPadButton.UpLeft();
+			DPadButton.UpRight upRight = new DPadButton.UpRight();
+			DPadButton.DownLeft downLeft = new DPadButton.DownLeft();
+			DPadButton.DownRight downRight = new DPadButton.DownRight();
+
+			this.parseBaseProperties( upLeft );
+			this.parseBaseProperties( upRight );
+			this.parseBaseProperties( downLeft );
+			this.parseBaseProperties( downRight );
+
+			buttons.add( upLeft );
+			buttons.add( upRight );
+			buttons.add( downLeft );
+			buttons.add( downRight );
+
+			if ( this.json.has( KEY_CODE_UP_LEFT ) )
+			{
+				upLeft.setKeyCode( this.json.getInt( KEY_CODE_UP_LEFT ) );
+			}
+
+			if ( this.json.has( KEY_CODE_UP_RIGHT ) )
+			{
+				upRight.setKeyCode( this.json.getInt( KEY_CODE_UP_RIGHT ) );
+			}
+
+			if ( this.json.has( KEY_CODE_DOWN_LEFT ) )
+			{
+				downLeft.setKeyCode( this.json.getInt( KEY_CODE_DOWN_LEFT ) );
+			}
+
+			if ( this.json.has( KEY_CODE_DOWN_RIGHT ) )
+			{
+				downRight.setKeyCode( this.json.getInt( KEY_CODE_DOWN_RIGHT ) );
+			}
+
 		}
 
-		if ( this.json.has( KEY_CODE_UP_RIGHT ) )
-		{
-			button.setKeyCodeUpRight( this.json.getInt( KEY_CODE_UP_RIGHT ) );
-		}
-
-		if ( this.json.has( KEY_CODE_DOWN_LEFT ) )
-		{
-			button.setKeyCodeDownLeft( this.json.getInt( KEY_CODE_DOWN_LEFT ) );
-		}
-
-		if ( this.json.has( KEY_CODE_DOWN_RIGHT ) )
-		{
-			button.setKeyCodeDownRight( this.json.getInt( KEY_CODE_DOWN_RIGHT ) );
-		}
-
-		if ( this.json.has( ENABLE_DIAGONAL ) )
-		{
-			button.setEnableDiagonal( this.json.getBoolean( ENABLE_DIAGONAL ) );
-		}
-
-		return button;
+		return buttons;
 	}
 
 }

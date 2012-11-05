@@ -6,6 +6,11 @@ public class ArcadeButton extends AbstractButton
 	private int colour;
 	private int keyCode;
 
+	public String toString()
+	{
+		return "Arcade button";
+	}
+
 	public int getColour()
 	{
 		return colour;

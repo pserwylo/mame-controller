@@ -12,15 +12,15 @@
 	    "type": "arcade",
 		"colour": 0xFFCC0000,
 		"keyCode": 65,
-		"x": 400,
-		"y": 100
+		"x": 200,
+		"y": 200
 	},
 	{
 	    "type": "arcade",
 		"colour": 0xFF00CC00,
 		"keyCode": 66,
-		"x": 600,
-		"y": 100
+		"x": 300,
+		"y": 300
 	}
 ]
 }

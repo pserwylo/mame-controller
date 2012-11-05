@@ -2,108 +2,120 @@ package com.serwylo.mame.controller.client.android.controllers.buttons;
 
 import com.serwylo.mame.controller.client.android.controllers.KeyCodes;
 
-public class DPadButton extends AbstractButton
+abstract public class DPadButton extends AbstractButton
 {
 
-	private int keyCodeLeft = KeyCodes.VK_LEFT;
-	private int keyCodeRight = KeyCodes.VK_RIGHT;
-	private int keyCodeUp = KeyCodes.VK_UP;
-	private int keyCodeDown = KeyCodes.VK_DOWN;
-
-	private int keyCodeUpLeft;
-	private int keyCodeUpRight;
-	private int keyCodeDownLeft;
-	private int keyCodeDownRight;
-
-	private boolean enableDiagonal = true;
-
-	public int getKeyCodeLeft()
+	public abstract static class Directional extends AbstractButton
 	{
-		return keyCodeLeft;
+
+		public static final int DIR_UP = 1;
+		public static final int DIR_RIGHT = 2;
+		public static final int DIR_DOWN = 4;
+		public static final int DIR_LEFT = 8;
+
+		public static final int DIR_UP_LEFT = DIR_UP | DIR_LEFT;
+		public static final int DIR_UP_RIGHT = DIR_UP | DIR_RIGHT;
+		public static final int DIR_DOWN_LEFT = DIR_DOWN | DIR_LEFT;
+		public static final int DIR_DOWN_RIGHT = DIR_DOWN | DIR_RIGHT;
+
+		private int direction;
+
+		public Directional( int direction )
+		{
+			this.direction = direction;
+		}
+
+		public int getDirection()
+		{
+			return this.direction;
+		}
+
+		/**
+		 * Checks if this button points in the direction 'dir'.
+		 * For example, the following three buttons all point in the direction DIR_UP:
+		 *  - DIR_UP
+		 *  - DIR_UP_LEFT
+		 *  - DIR_UP_RIGHT
+		 * @param dir
+		 * @return
+		 */
+		public boolean includesDirection( int dir )
+		{
+			return ( ( this.direction & dir ) == dir );
+		}
+
 	}
 
-	public void setKeyCodeLeft(int keyCodeLeft)
+	public static class Up extends Directional
 	{
-		this.keyCodeLeft = keyCodeLeft;
+		public Up()
+		{
+			super( DIR_UP );
+			this.setKeyCode( KeyCodes.VK_UP );
+		}
 	}
 
-	public int getKeyCodeRight()
+	public static class Right extends Directional
 	{
-		return keyCodeRight;
+		public Right()
+		{
+			super( DIR_RIGHT );
+			this.setKeyCode( KeyCodes.VK_RIGHT );
+		}
 	}
 
-	public void setKeyCodeRight(int keyCodeRight)
+	public static class Down extends Directional
 	{
-		this.keyCodeRight = keyCodeRight;
+		public Down()
+		{
+			super( DIR_DOWN );
+			this.setKeyCode( KeyCodes.VK_DOWN );
+		}
 	}
 
-	public int getKeyCodeUp()
+	public static class Left extends Directional
 	{
-		return keyCodeUp;
+		public Left()
+		{
+			super( DIR_LEFT );
+			this.setKeyCode( KeyCodes.VK_LEFT );
+		}
 	}
 
-	public void setKeyCodeUp(int keyCodeUp)
+	public static class UpLeft extends Directional
 	{
-		this.keyCodeUp = keyCodeUp;
+		public UpLeft()
+		{
+			super( DIR_UP_LEFT );
+			// this.setKeyCode( KeyCodes.VK_LEFT );
+		}
 	}
 
-	public int getKeyCodeDown()
+	public static class DownLeft extends Directional
 	{
-		return keyCodeDown;
+		public DownLeft()
+		{
+			super( DIR_DOWN_LEFT );
+			// this.setKeyCode( KeyCodes.VK_LEFT );
+		}
 	}
 
-	public void setKeyCodeDown(int keyCodeDown)
+	public static class UpRight extends Directional
 	{
-		this.keyCodeDown = keyCodeDown;
+		public UpRight()
+		{
+			super( DIR_UP_RIGHT );
+			// this.setKeyCode( KeyCodes.VK_LEFT );
+		}
 	}
 
-	public int getKeyCodeUpLeft()
+	public static class DownRight extends Directional
 	{
-		return keyCodeUpLeft;
+		public DownRight()
+		{
+			super( DIR_DOWN_RIGHT );
+			// this.setKeyCode( KeyCodes.VK_LEFT );
+		}
 	}
 
-	public void setKeyCodeUpLeft(int keyCodeUpLeft)
-	{
-		this.keyCodeUpLeft = keyCodeUpLeft;
-	}
-
-	public int getKeyCodeUpRight()
-	{
-		return keyCodeUpRight;
-	}
-
-	public void setKeyCodeUpRight(int keyCodeUpRight)
-	{
-		this.keyCodeUpRight = keyCodeUpRight;
-	}
-
-	public int getKeyCodeDownLeft()
-	{
-		return keyCodeDownLeft;
-	}
-
-	public void setKeyCodeDownLeft(int keyCodeDownLeft)
-	{
-		this.keyCodeDownLeft = keyCodeDownLeft;
-	}
-
-	public int getKeyCodeDownRight()
-	{
-		return keyCodeDownRight;
-	}
-
-	public void setKeyCodeDownRight(int keyCodeDownRight)
-	{
-		this.keyCodeDownRight = keyCodeDownRight;
-	}
-
-	public boolean isEnableDiagonal()
-	{
-		return enableDiagonal;
-	}
-
-	public void setEnableDiagonal(boolean enableDiagonal)
-	{
-		this.enableDiagonal = enableDiagonal;
-	}
 }
