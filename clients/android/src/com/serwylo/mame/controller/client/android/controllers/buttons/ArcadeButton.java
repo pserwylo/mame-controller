@@ -4,7 +4,6 @@ public class ArcadeButton extends AbstractButton
 {
 
 	private int colour;
-	private int keyCode;
 
 	public String toString()
 	{
@@ -21,13 +20,4 @@ public class ArcadeButton extends AbstractButton
 		this.colour = colour;
 	}
 
-	public int getKeyCode()
-	{
-		return keyCode;
-	}
-
-	public void setKeyCode( int keyCode )
-	{
-		this.keyCode = keyCode;
-	}
 }

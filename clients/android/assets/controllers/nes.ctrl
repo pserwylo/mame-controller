@@ -1,0 +1,25 @@
+{
+"label": "NES",
+"orientation": "landscape",
+"buttons": [
+	{
+	    "type": "dpad",
+		"x": 150,
+		"y": 150,
+		"enableDiagonal": false
+	},
+	{
+	    "type": "nes",
+		"keyCode": 65,
+		"x": 500,
+		"y": 150
+	},
+	{
+	    "type": "nes",
+		"keyCode": 66,
+		"x": 600,
+		"y": 150
+	}
+]
+}
+

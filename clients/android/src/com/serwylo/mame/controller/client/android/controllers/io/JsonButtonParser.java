@@ -6,12 +6,15 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public abstract class JsonButtonParser
+public abstract class JsonButtonParser<ButtonType extends AbstractButton>
 {
 
+	public static final String KEY_TYPE = "type";
 	public static final String KEY_X = "x";
 	public static final String KEY_Y = "y";
-	public static final String KEY_TYPE = "type";
+
+	public static final String KEY_KEY_CODE = "keyCode";
+
 
 	public static JsonButtonParser getParser( JSONObject json ) throws JSONException
 	{
@@ -23,6 +26,10 @@ public abstract class JsonButtonParser
 		else if ( type.equals( DPadButtonParser.LABEL ) )
 		{
 			return new DPadButtonParser().setJson( json );
+		}
+		else if ( type.equals( NesButtonParser.LABEL ) )
+		{
+			return new NesButtonParser().setJson( json );
 		}
 		else
 		{
@@ -45,17 +52,24 @@ public abstract class JsonButtonParser
 	 * @return
 	 * @throws JSONException
 	 */
-	public abstract ArrayList<AbstractButton> parse() throws JSONException;
+	public abstract ArrayList<ButtonType> parse() throws JSONException;
 
 	/**
 	 * Parses all of the KEY_* properties declared in {@link JsonButtonParser} from the {@link JsonButtonParser#json}
 	 * property.
 	 * @param button The button to store the parsed properties in.
 	 */
-	protected void parseBaseProperties( AbstractButton button ) throws JSONException
+	protected void parseBaseProperties( ButtonType button ) throws JSONException
 	{
 		button.setX( json.getInt( KEY_X ) );
 		button.setY( json.getInt( KEY_Y ) );
+
+		if ( json.has( KEY_KEY_CODE ) )
+		{
+			// Things like the DPad button specify multiple key code items in the JSON, for up/down/left/right.
+			// As such, not all buttons have a KEY_KEY_CODE item, but most do, so I put this here anyhow.
+			button.setKeyCode( json.getInt( KEY_KEY_CODE ) );
+		}
 	}
 
 }

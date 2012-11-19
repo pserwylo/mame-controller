@@ -6,24 +6,24 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 
-public class ArcadeButtonParser extends JsonButtonParser
+public class ArcadeButtonParser extends JsonButtonParser<ArcadeButton>
 {
 
 	public static String LABEL = "arcade";
-
 	public static String COLOUR = "colour";
-	public static final String KEY_CODE = "keyCode";
 
 	@Override
-	public ArrayList<AbstractButton> parse() throws JSONException
+	public ArrayList<ArcadeButton> parse() throws JSONException
 	{
 		ArcadeButton button = new ArcadeButton();
-		this.parseBaseProperties( button );
-		button.setColour( this.json.getInt( COLOUR ) );
-		button.setKeyCode( this.json.getInt( KEY_CODE ) );
 
-		ArrayList<AbstractButton> buttons = new ArrayList<AbstractButton>( 1 );
+		this.parseBaseProperties( button );
+
+		button.setColour( this.json.getInt( COLOUR ) );
+
+		ArrayList<ArcadeButton> buttons = new ArrayList<ArcadeButton>( 1 );
 		buttons.add( button );
+
 		return buttons;
 	}
 

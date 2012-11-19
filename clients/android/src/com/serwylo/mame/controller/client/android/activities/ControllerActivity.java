@@ -38,11 +38,13 @@ public class ControllerActivity extends Activity implements IButtonPressListener
 
 	protected ControllerDefinition controller;
 
+	@Override
 	public void onCreate( Bundle savedInstanceState )
 	{
 		super.onCreate( savedInstanceState );
 	}
 
+	@Override
 	public void onStart()
 	{
 		super.onStart();
@@ -68,6 +70,12 @@ public class ControllerActivity extends Activity implements IButtonPressListener
 
 	}
 
+	@Override
+	public void onBackPressed()
+	{
+		MainMenuActivity.show( this );
+	}
+
 	/**
 	 * Constructs a {@link ControllerView} as the content view for this activity.
 	 */
@@ -78,12 +86,14 @@ public class ControllerActivity extends Activity implements IButtonPressListener
 		this.setContentView( view );
 	}
 
+	@Override
 	public void onButtonDown( int keyCode )
 	{
 		this.vibrate();
 		NetworkClient.getCurrent().sendEvent( InputEvent.createKeyDown( keyCode ) );
 	}
 
+	@Override
 	public void onButtonUp( int keyCode )
 	{
 		this.vibrate();

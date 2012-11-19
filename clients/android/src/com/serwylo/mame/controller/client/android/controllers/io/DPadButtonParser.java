@@ -1,14 +1,12 @@
 package com.serwylo.mame.controller.client.android.controllers.io;
 
-import android.graphics.BitmapFactory;
 import com.serwylo.mame.controller.client.android.controllers.buttons.AbstractButton;
-import com.serwylo.mame.controller.client.android.controllers.buttons.ArcadeButton;
 import com.serwylo.mame.controller.client.android.controllers.buttons.DPadButton;
 import org.json.JSONException;
 
 import java.util.ArrayList;
 
-public class DPadButtonParser extends JsonButtonParser
+public class DPadButtonParser extends JsonButtonParser<DPadButton.Directional>
 {
 
 	public static String LABEL = "dpad";
@@ -24,9 +22,9 @@ public class DPadButtonParser extends JsonButtonParser
 	public static String KEY_ENABLE_DIAGONAL = "enableDiagonal";
 
 	@Override
-	public ArrayList<AbstractButton> parse() throws JSONException
+	public ArrayList<DPadButton.Directional> parse() throws JSONException
 	{
-		ArrayList<AbstractButton> buttons = new ArrayList<AbstractButton>( 8 );
+		ArrayList<DPadButton.Directional> buttons = new ArrayList<DPadButton.Directional>( 8 );
 
 		int x = this.json.getInt( KEY_X );
 		int y = this.json.getInt( KEY_Y );
