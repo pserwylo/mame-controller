@@ -9,9 +9,23 @@ import com.serwylo.mame.controller.client.android.util.WifiBarcodeParser;
 public class WifiProfile extends ConnectionProfile
 {
 
-	private String label;
 	private String ipAddress;
 	private int port;
+
+	public final String getIpAddress()
+	{
+		return this.ipAddress;
+	}
+
+	public final int getPort()
+	{
+		return this.port;
+	}
+
+	public boolean equals( WifiProfile profile )
+	{
+		return profile.getPort() == this.getPort() && profile.getIpAddress().equals( this.getIpAddress() );
+	}
 
 	/**
 	 * Creates a {@link com.serwylo.mame.controller.client.android.util.WifiBarcodeParser} and passes it to
@@ -34,10 +48,12 @@ public class WifiProfile extends ConnectionProfile
 		return profile;
 	}
 
-	@Override
-	public String getLabel()
+	public static WifiProfile create( String ipAddress, int port )
 	{
-		return this.label;
+		WifiProfile profile = new WifiProfile();
+		profile.port = port;
+		profile.ipAddress = ipAddress;
+		return profile;
 	}
 
 	@Override
@@ -51,5 +67,4 @@ public class WifiProfile extends ConnectionProfile
 	{
 		return WifiClient.create( this.ipAddress, this.port );
 	}
-
 }

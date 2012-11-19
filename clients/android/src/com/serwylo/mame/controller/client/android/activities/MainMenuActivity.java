@@ -1,21 +1,28 @@
 package com.serwylo.mame.controller.client.android.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.serwylo.mame.controller.client.android.R;
-import com.serwylo.mame.controller.client.android.util.WifiBarcodeParser;
+import com.serwylo.mame.controller.client.android.io.connectionProfiles.WifiProfileIo;
+import com.serwylo.mame.controller.client.android.net.wifi.WifiProfile;
 
 import java.util.ArrayList;
 
 public class MainMenuActivity extends Activity implements View.OnClickListener
 {
+
+	private boolean hasStartedOnce = false;
+
+	private boolean triedAutoConnect = false;
 
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -23,10 +30,46 @@ public class MainMenuActivity extends Activity implements View.OnClickListener
 
 		this.setContentView( R.layout.main_menu );
 
-		this.findViewById( R.id.btnConnectManual ).setOnClickListener( this );
 		this.findViewById( R.id.btnConnectScan ).setOnClickListener( this );
 		this.findViewById( R.id.btnSettings ).setOnClickListener( this );
 		this.findViewById( R.id.btnQuit ).setOnClickListener( this );
+
+	}
+
+	public void onResume()
+	{
+		super.onResume();
+
+		if ( !this.hasStartedOnce )
+		{
+			this.attemptAutoConnect();
+			this.hasStartedOnce = true;
+		}
+		else
+		{
+
+		}
+	}
+
+	public static void show( Context context )
+	{
+		Intent intent = new Intent( context, MainMenuActivity.class );
+		context.startActivity( intent );
+	}
+
+	/**
+	 * Inspects the auto_connect preference to decide whether to attempt to connect to the last server.
+	 * @return True if we went to a connect activity trying to connect, false if we didn't have the chance. Note that
+	 * this has nothing to do with the success, we wont know that for a while.
+	 */
+	protected void attemptAutoConnect()
+	{
+		this.triedAutoConnect = false;
+
+		if ( PreferenceManager.getDefaultSharedPreferences( this ).getBoolean( this.getString( R.string.pref_key_auto_connect ), true ) )
+		{
+			this.triedAutoConnect = WifiConnectActivity.connectAutomatically( this );
+		}
 	}
 
 	@Override
@@ -34,16 +77,12 @@ public class MainMenuActivity extends Activity implements View.OnClickListener
 	{
 		switch( view.getId() )
 		{
-			case R.id.btnConnectManual:
-				this.connectManually();
-				break;
-
 			case R.id.btnConnectScan:
 				this.connectByScanning();
 				break;
 
 			case R.id.btnSettings:
-				this.showSettings();
+				SettingsActivity.show( this );
 				break;
 
 			case R.id.btnQuit:
@@ -98,12 +137,6 @@ public class MainMenuActivity extends Activity implements View.OnClickListener
 			IntentResult scanResult = IntentIntegrator.parseActivityResult( requestCode, resultCode, intent );
 			this.onScanComplete( scanResult );
 		}
-	}
-
-	private void showSettings()
-	{
-		Intent intent = new Intent( this, SettingsActivity.class );
-		this.startActivity( intent );
 	}
 
 	/**

@@ -5,6 +5,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:padding="20dp"
+	android:gravity="center_horizontal"
     >
 
 	<LinearLayout
@@ -12,15 +13,15 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content">
 		<Button
-				android:height="100dp"
-				android:id="@+id/btnConnectScan"
-				android:text="@string/connect_scan"
-				android:textSize="20dp"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:layout_weight="0.5"
-				/>
-		<Button
+			android:height="100dp"
+			android:id="@+id/btnConnectScan"
+			android:text="@string/connect_scan"
+			android:textSize="20dp"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="0.5"
+			/>
+		<!--<Button
 			android:height="100dp"
 			android:id="@+id/btnConnectManual"
 			android:text="@string/connect_manual"
@@ -28,21 +29,22 @@
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:layout_weight="0.5"
-			/>
+			/>-->
 
 	</LinearLayout>
 
     <Button
 		android:id="@+id/btnSettings"
-        android:layout_width="fill_parent"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:text="@string/settings"
         />
+
     <Button
 		android:id="@+id/btnQuit"
-        android:layout_width="fill_parent"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:text="@string/quit"
         />
-</LinearLayout>
 
+</LinearLayout>

@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Mame Controller</string>
-    <string name="connect_scan">Connect\n(barcode)</string>
+    <string name="connect_scan">Connect</string>
     <string name="quit">Quit</string>
     <string name="settings">Settings</string>
-	<string name="connect_manual">Connect\n(manual)</string>
+	<string name="connect_manual">Connect (manual)</string>
 	<string name="cancel">Cancel</string>
+	<string name="server_list">Server list</string>
+	<string name="auto_connect">Auto connect to server</string>
+	<string name="auto_connect_summary">Attempt to connect to the last server you connected to when the application
+		starts
+	</string>
+	<string name="connection_preferences">Connection settings</string>
+	<string name="server_list_summary">List of servers which you have connected to in the past</string>
+	<string name="pref_key_auto_connect">autoConnect</string>
+	<string name="timeout_summary">Number of seconds to attempt to connect before giving up</string>
+	<string name="timeout">Connection timeout</string>
+	<string name="pref_key_timeout">timeout</string>
+	<string name="no_servers">No recent servers</string>
+	<string name="forget">Forget server</string>
 </resources>

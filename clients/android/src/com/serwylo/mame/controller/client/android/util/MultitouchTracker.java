@@ -2,7 +2,6 @@ package com.serwylo.mame.controller.client.android.util;
 
 import android.view.MotionEvent;
 import android.view.View;
-import com.serwylo.mame.controller.client.android.controllers.buttons.ui.ButtonView;
 
 import java.util.ArrayList;
 

@@ -5,7 +5,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import com.serwylo.mame.controller.client.android.R;
 import com.serwylo.mame.controller.client.android.net.ConnectionEvent;
 import com.serwylo.mame.controller.client.android.net.NetworkClient;
 import com.serwylo.mame.controller.shared.InputEvent;
@@ -123,11 +125,15 @@ public class WifiClient extends NetworkClient
 
 				WifiClient.this.notifyListeners( ConnectionEvent.createStatusEvent( WifiClient.this, "Connecting..." ) );
 
+				int timeout = Integer.valueOf(
+					PreferenceManager.getDefaultSharedPreferences( context )
+						.getString( context.getString( R.string.pref_key_timeout ), "3" )
+				);
+
 				try
 				{
-					// TODO: Change the timeout to an (advanced) preference...
-					Log.d( "MAME", "Socket#connect() - Timeout of 3 seconds." );
-					WifiClient.this.socket.connect( socketAddress, 3000 );
+					Log.d( "MAME", "Socket#connect() - Timeout of " + timeout + " seconds." );
+					WifiClient.this.socket.connect( socketAddress, timeout * 1000 );
 					Log.d( "MAME", "Connected." );
 					WifiClient.this.output = new PrintWriter( WifiClient.this.socket.getOutputStream(), true );
 					WifiClient.this.input = new BufferedReader( new InputStreamReader( WifiClient.this.socket.getInputStream() ) );

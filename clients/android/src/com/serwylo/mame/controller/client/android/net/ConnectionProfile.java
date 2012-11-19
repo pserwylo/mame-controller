@@ -1,16 +1,14 @@
 package com.serwylo.mame.controller.client.android.net;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public abstract class ConnectionProfile implements Serializable
 {
 
-	/**
-	 * Human readable name, which the user is free to change.
-	 * e.g. "Home" or "Office".
-	 * @return
-	 */
-	public abstract String getLabel();
+	private Date lastConnectDate;
+
+	private String label;
 
 	/**
 	 * More nitty gritty details than just a human readable name.
@@ -26,4 +24,31 @@ public abstract class ConnectionProfile implements Serializable
 	 */
 	public abstract NetworkClient createClient();
 
+	public final Date getLastConnectDate()
+	{
+		return this.lastConnectDate;
+	}
+
+	public final void setLastConnectDate( Date lastConnectDate )
+	{
+		this.lastConnectDate = lastConnectDate;
+	}
+
+	/**
+	 * Human readable name, which the user is free to change.
+	 * e.g. "Home" or "Office".
+	 * @return
+	 */
+	public final String getLabel()
+	{
+		return this.label;
+	}
+
+	/**
+	 * @see {@link ConnectionProfile#setLabel(String)}
+	 */
+	public final void setLabel( String label )
+	{
+		this.label = label;
+	}
 }
