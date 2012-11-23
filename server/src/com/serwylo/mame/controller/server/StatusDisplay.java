@@ -1,6 +1,6 @@
 package com.serwylo.mame.controller.server;
 
-import com.serwylo.mame.controller.server.utils.Properties;
+import com.serwylo.mame.controller.server.utils.MameProperties;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -23,7 +23,7 @@ public class StatusDisplay extends JFrame
 
 	protected void dumpImage()
 	{
-		if ( Properties.getInstance().getStatusOutputPath() != null )
+		if ( MameProperties.getInstance().getStatusOutputPath() != null )
 		{
 			String tempDir = System.getProperty( "java.io.tmpdir" );
 			BufferedImage bi = new BufferedImage( this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB );
@@ -36,8 +36,8 @@ public class StatusDisplay extends JFrame
 
 			try
 			{
-				System.out.println( "Dumping image to '" + Properties.getInstance().getStatusOutputPath() );
-				ImageIO.write( bi, "png", new File( Properties.getInstance().getStatusOutputPath() ) );
+				System.out.println( "Dumping image to '" + MameProperties.getInstance().getStatusOutputPath() );
+				ImageIO.write( bi, "png", new File( MameProperties.getInstance().getStatusOutputPath() ) );
 			}
 			catch ( IOException ioe )
 			{
@@ -61,7 +61,7 @@ public class StatusDisplay extends JFrame
 	 */
 	public static void layoutDisplays()
 	{
-		if ( Properties.getInstance().getShowGuiStatus() )
+		if ( MameProperties.getInstance().getShowGuiStatus() )
 		{
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 			int startY = (int)screenSize.getHeight();

@@ -3,6 +3,7 @@ package com.serwylo.mame.controller.server.tcp;
 import com.serwylo.mame.controller.server.Server;
 import com.serwylo.mame.controller.server.ServerAppBridge;
 import com.serwylo.mame.controller.server.StatusDisplay;
+import com.serwylo.mame.controller.server.utils.PropertiesParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
@@ -54,26 +55,29 @@ public class TcpServerAppBridge extends ServerAppBridge
 	}
 
 	@Override
-	public void parseCommandLine( CommandLine commandLine )
+	public void parseConfig( PropertiesParser config )
 	{
+		String addressString = null;
+		Integer port = null;
 		try
 		{
-			this.isActive = commandLine.hasOption( 'w' );
+			this.isActive = config.getBoolean( 'w' );
 
-			InetAddress address = commandLine.hasOption( 'a' ) ? InetAddress.getByName( commandLine.getOptionValue( 'a' ) ) : null;
+			addressString = config.getString( 'a', null );
+			InetAddress address = addressString != null ? InetAddress.getByName( addressString ) : null;
 			this.server.setIpAddress( address );
 
-			Integer port = commandLine.hasOption( 'p' ) ? Integer.parseInt( commandLine.getOptionValue( 'p' ) ) : TcpServer.DEFAULT_PORT;
+			port = config.getInt( 'p', TcpServer.DEFAULT_PORT );
 			this.server.setPort( port );
 		}
 		catch ( UnknownHostException uhe )
 		{
-			System.err.println( "Invalid address: " + commandLine.getOptionValue( 'a' ) );
+			System.err.println( "Invalid address: " + addressString );
 			System.err.println( uhe.getMessage() );
 		}
 		catch ( NumberFormatException nfe )
 		{
-			System.err.println( "Invalid port: " + commandLine.getOptionValue( 'p' ) );
+			System.err.println( "Invalid port: " + port );
 			System.err.println( nfe.getMessage() );
 		}
 

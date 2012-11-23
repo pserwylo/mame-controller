@@ -1,5 +1,6 @@
 package com.serwylo.mame.controller.server;
 
+import com.serwylo.mame.controller.server.utils.PropertiesParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
@@ -26,6 +27,6 @@ public abstract class ServerAppBridge
 
 	public abstract ArrayList<Option> getCliOptions();
 
-	public abstract void parseCommandLine( CommandLine parser );
+	public abstract void parseConfig( PropertiesParser parser );
 
 }

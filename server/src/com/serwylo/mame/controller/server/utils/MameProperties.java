@@ -1,11 +1,13 @@
 package com.serwylo.mame.controller.server.utils;
 
-public class Properties
+import java.util.Properties;
+
+public class MameProperties
 {
 
-	private static Properties instance = null;
+	private static MameProperties instance = null;
 
-	public static Properties getInstance()
+	public static MameProperties getInstance()
 	{
 		if ( instance == null )
 		{
@@ -21,7 +23,7 @@ public class Properties
 		int waitTime
 	)
 	{
-		instance = new Properties();
+		instance = new MameProperties();
 		instance.showGuiStatus = showGuiStatus;
 		instance.statusOutputPath = statusOutputPath;
 		instance.executable = executable;
@@ -32,7 +34,6 @@ public class Properties
 	private String statusOutputPath;
 	private String executable;
 	private int waitTime;
-
 
 	/**
 	 * True if we want to open a window in the bottom right corner (always on top) which shows the status.
@@ -56,7 +57,7 @@ public class Properties
 	}
 
 	/**
-	 * The executable (including args) to run when a client connects (after {@link Properties#getWaitTime()}
+	 * The executable (including args) to run when a client connects (after {@link MameProperties#getWaitTime()}
 	 * @return
 	 */
 	public String getExecutable()

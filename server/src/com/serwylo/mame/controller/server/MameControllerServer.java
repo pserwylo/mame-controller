@@ -2,14 +2,13 @@ package com.serwylo.mame.controller.server;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.*;
 import java.util.ArrayList;
-import java.util.TimerTask;
 
 import com.serwylo.mame.controller.server.events.*;
 import com.serwylo.mame.controller.server.tcp.TcpServer;
 import com.serwylo.mame.controller.server.tcp.TcpServerAppBridge;
-import com.serwylo.mame.controller.server.utils.Properties;
+import com.serwylo.mame.controller.server.utils.MameProperties;
+import com.serwylo.mame.controller.server.utils.PropertiesParser;
 import com.serwylo.mame.controller.shared.InputEvent;
 import org.apache.commons.cli.*;
 
@@ -57,6 +56,7 @@ public class MameControllerServer implements IInputEventListener, IServerEventLi
 	public void parseArgs( String[] args )
 	{
 		Options options = new Options();
+		options.addOption( "c", "config-file", true, "Pass the options in via a config file, rather than individual command line args" );
 		options.addOption( "g", "status-gui", false, "Show the status in a GUI window in the bottom right of the screen" );
 		options.addOption( "s", "status-output", true, "Path to (png) file to dump status window to" );
 		options.addOption( "x", "exec", true, "The executable command to run once clients are connected" );
@@ -70,30 +70,29 @@ public class MameControllerServer implements IInputEventListener, IServerEventLi
 			}
 		}
 
-		CommandLine line;
 		try
 		{
-			CommandLineParser parser = new PosixParser();
-			line = parser.parse( options, args );
-			boolean showGuiStatus = !line.hasOption( 'g' );
-			String statusOutputPath = line.hasOption( 's' ) ? line.getOptionValue( 's' ) : null;
-			String executable = line.hasOption( 'x' ) ? line.getOptionValue( 'x' ) : null;
-			int waitTime = line.hasOption( 't' ) ? Integer.parseInt( line.getOptionValue( 't' ) ) : 0;
+			PropertiesParser config = new PropertiesParser( options, args ).parse();
 
 			// Make these properties available globally...
-			Properties.setup( showGuiStatus, statusOutputPath, executable, waitTime );
+			MameProperties.setup(
+				config.getBoolean( 'g' ),
+				config.getString( 's', null ),
+				config.getString( 'x', null ),
+				config.getInt( 't', 0 )
+			);
 
 			for ( ServerAppBridge serverBridge : this.availableServers )
 			{
-				serverBridge.parseCommandLine( line );
+				serverBridge.parseConfig( config );
 			}
 
-			this.execManager = ExecManager.create( executable );
+			this.execManager = ExecManager.create( MameProperties.getInstance().getExecutable() );
 		}
-		catch ( ParseException pe )
+		catch ( Exception e )
 		{
 			System.err.println( "Error while parsing CLI options:" );
-			System.err.println( pe.getMessage() );
+			System.err.println( e.getMessage() );
 			System.exit( 1 );
 		}
 	}
@@ -113,7 +112,8 @@ public class MameControllerServer implements IInputEventListener, IServerEventLi
 
 	/**
 	 * Look for client connect/disconnect events and tell the execManager to do the appropriate thing in response.
-	 * @param event
+	 * @param event Mainly we are interested in the {@link ServerEvent#TYPE_NEW_CLIENT} event, where we can then listen
+	 *              to this client for its own events.
 	 */
 	@Override
 	public void onServerEvent( ServerEvent event )
@@ -131,10 +131,10 @@ public class MameControllerServer implements IInputEventListener, IServerEventLi
 		{
 			if ( !this.execManager.isRunning() )
 			{
-				if ( Properties.getInstance().getWaitTime() > 0 )
+				if ( MameProperties.getInstance().getWaitTime() > 0 )
 				{
-					System.out.println( "Waiting " + Properties.getInstance().getWaitTime() + " milliseconds before running exe..." );
-					Timer timer = new Timer( Properties.getInstance().getWaitTime(), new ActionListener()
+					System.out.println( "Waiting " + MameProperties.getInstance().getWaitTime() + " milliseconds before running exe..." );
+					Timer timer = new Timer( MameProperties.getInstance().getWaitTime(), new ActionListener()
 					{
 						@Override
 						public void actionPerformed( ActionEvent actionEvent )
