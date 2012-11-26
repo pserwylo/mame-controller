@@ -30,15 +30,14 @@ Start by copying the default config files fore IceWM:
 
 List of commands
 ----------------
-pacman -Syu
-pacman -S sudo
-useradd -m -g users -G audio,disk,network,power,storage,video,bin -s /bin/bash mame
-passwd mame
-pacman -S xorg-server xorg-xinit xorg-server-utils
-pacman -S icewm
-vim /etc/inittab # See Auto Login above...
-su mame
-echo "exec icewm-session" >> ~/.xinitrc
-mkdir ~/.icewm
-cp -R /usr/share/icewm/* ~/.icewm
-
+* pacman -Syu
+* pacman -S sudo
+* useradd -m -g users -G audio,disk,network,power,storage,video,bin -s /bin/bash mame
+* passwd mame
+* pacman -S xorg-server xorg-xinit xorg-server-utils
+* pacman -S icewm
+* vim /etc/inittab # See Auto Login above...
+* su mame
+* echo "exec icewm-session" >> ~/.xinitrc
+* mkdir ~/.icewm
+* cp -R /usr/share/icewm/* ~/.icewm
