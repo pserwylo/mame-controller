@@ -14,6 +14,8 @@ https://wiki.archlinux.org/index.php/IceWM
 Auto Login (and start DE)
 ------------------------------------------
 
+TODO: Update to systemd (instead of inittab)
+
 I use inittab to change the runlevel to 5 (to automatically start X when booting), and then change the login manager to that specified at:
 
 https://wiki.archlinux.org/index.php/Start_X_at_Boot#inittab
@@ -34,17 +36,13 @@ The default Arch install with a default OpenJDK package from pacman does not sup
 
 List of commands
 ----------------
-pacman -Syu
-pacman -S sudo
-useradd -m -g users -G audio,disk,network,power,storage,video,bin -s /bin/bash mame
-passwd mame
-pacman -S xorg-server xorg-xinit xorg-server-utils
-pacman -S icewm
-vim /etc/inittab # See Auto Login above...
-su mame
-echo "exec icewm-session" >> ~/.xinitrc
-mkdir ~/.icewm
-cp -R /usr/share/icewm/* ~/.icewm
+* pacman -Syu
+* pacman -S sudo xorg-server xorg-xinit xorg-server-utils icewm
 
-
-
+* useradd -m -g users -G audio,disk,network,power,storage,video,bin -s /bin/bash mame
+* passwd mame
+* vim /etc/inittab # See Auto Login above...
+* su mame
+* echo "exec icewm-session" >> ~/.xinitrc
+* mkdir ~/.icewm
+* cp -R /usr/share/icewm/* ~/.icewm

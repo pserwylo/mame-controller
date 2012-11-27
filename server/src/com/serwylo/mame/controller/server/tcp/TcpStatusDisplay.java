@@ -58,7 +58,7 @@ public class TcpStatusDisplay extends StatusDisplay implements IServerEventListe
 
 		this.setTitle( "MAME Controller Server");
 
-		// Construct panel which displays information useful for connecting...
+		// The qrPanel displays information useful for connecting...
 		this.qrPanel = new JPanel();
 		this.qrPanel.setLayout(new BorderLayout());
 		this.qrPanel.setBackground(Color.WHITE);
@@ -85,7 +85,7 @@ public class TcpStatusDisplay extends StatusDisplay implements IServerEventListe
 		this.add( this.qrPanel );
 		this.setSize( 140, height );
 
-		// Construct panel which shows how many clients are connected...
+		// This panel shows how many clients are connected...
 		this.connectedPanel = new JPanel();
 		this.connectedPanel.setLayout( new FlowLayout() );
 
