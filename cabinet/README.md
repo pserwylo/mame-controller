@@ -27,6 +27,10 @@ Start by copying the default config files fore IceWM:
 	https://wiki.archlinux.org/index.php/IceWM#Configuration
 
 
+OpenJDK and Monospaced fonts
+----------------------------
+The default Arch install with a default OpenJDK package from pacman does not support Monospaced fonts in AWT Java applications. To fix this, the package ttf-dejavu has the fonts which are specified by the default OpenJDK fontconfig.properties. Installing this package solves the problem.
+
 
 List of commands
 ----------------
@@ -41,4 +45,6 @@ su mame
 echo "exec icewm-session" >> ~/.xinitrc
 mkdir ~/.icewm
 cp -R /usr/share/icewm/* ~/.icewm
+
+
 
