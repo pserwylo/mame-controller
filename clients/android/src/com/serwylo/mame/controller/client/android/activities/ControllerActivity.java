@@ -3,6 +3,7 @@ package com.serwylo.mame.controller.client.android.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
@@ -42,6 +43,7 @@ public class ControllerActivity extends Activity implements IButtonPressListener
 	public void onCreate( Bundle savedInstanceState )
 	{
 		super.onCreate( savedInstanceState );
+		setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE );
 	}
 
 	@Override
