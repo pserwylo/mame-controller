@@ -29,16 +29,19 @@ public class DPadButtonParser extends JsonButtonParser<DPadButton.Directional>
 		int x = this.json.getInt( KEY_X );
 		int y = this.json.getInt( KEY_Y );
 
+		DPadButton.Middle middle = new DPadButton.Middle();
 		DPadButton.Up up = new DPadButton.Up();
 		DPadButton.Right right = new DPadButton.Right();
 		DPadButton.Down down = new DPadButton.Down();
 		DPadButton.Left left = new DPadButton.Left();
 
+		this.parseBaseProperties( middle );
 		this.parseBaseProperties( up );
 		this.parseBaseProperties( right );
 		this.parseBaseProperties( down );
 		this.parseBaseProperties( left );
 
+		buttons.add( middle );
 		buttons.add( up );
 		buttons.add( right );
 		buttons.add( down );

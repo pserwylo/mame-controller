@@ -34,6 +34,21 @@ public class DPadButtonView extends ButtonView<DPadButton.Directional>
 	}
 
 	@Override
+	public boolean contains( Point point )
+	{
+		boolean in;
+		if ( this.button.getDirection() == DPadButton.Directional.DIR_MIDDLE )
+		{
+			in = false;
+		}
+		else
+		{
+			in = super.contains( point );
+		}
+		return in;
+	}
+
+	@Override
 	protected void calcBounds()
 	{
 		this.bitmapSrcRect = new Rect();
