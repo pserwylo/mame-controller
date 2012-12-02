@@ -2,7 +2,6 @@
 <resources>
 
 	<style name="Mame" parent="android:Theme.Black.NoTitleBar">
-		<item name="android:textColor">#C96500</item>
 	</style>
 
 	<style name="Mame.MenuButton">
@@ -10,6 +9,7 @@
         <item name="android:layout_width">120dp</item>
         <item name="android:layout_height">45dp</item>
 		<item name="android:layout_marginTop">15dp</item>
+		<item name="android:textColor">#C96500</item>
 	</style>
 
 	<style name="Mame.MenuButton.Large">
