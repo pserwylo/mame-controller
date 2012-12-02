@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<style name="Mame" parent="android:Theme.Black.NoTitleBar">
+		<item name="android:textColor">#C96500</item>
+	</style>
+
+	<style name="Mame.MenuButton">
+		<item name="android:background">@drawable/button_selector</item>
+        <item name="android:layout_width">120dp</item>
+        <item name="android:layout_height">45dp</item>
+		<item name="android:layout_marginTop">15dp</item>
+	</style>
+
+	<style name="Mame.MenuButton.Large">
+		<item name="android:height">100dp</item>
+		<item name="android:textSize">20dp</item>
+		<item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_weight">0.5</item>
+	</style>
+
+</resources>
