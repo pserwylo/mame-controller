@@ -2,14 +2,11 @@ package com.serwylo.mame.controller.client.android.activities;
 
 import android.app.ListActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import com.serwylo.mame.controller.client.android.R;
 import com.serwylo.mame.controller.client.android.io.connectionProfiles.WifiProfileIo;
@@ -26,8 +23,6 @@ public class ServerListActivity extends ListActivity
 	private static final String KEY_LAST_CONNECT_DATE = "lastConnectDate";
 	private static final String KEY_PROFILE = "profile";
 
-	private ListAdapter adapter;
-
 	private ArrayList<HashMap<String, Object>> dataProvider;
 
 	public void onCreate(Bundle savedInstanceState)
@@ -38,12 +33,13 @@ public class ServerListActivity extends ListActivity
 		this.setContentView( R.layout.server_list );
 
 		this.dataProvider = this.getServerList();
-		this.adapter = new SimpleAdapter(
+
+		ListAdapter adapter = new SimpleAdapter(
 			this,
 			this.dataProvider,
 			R.layout.server_list_item,
-			new String[] { KEY_TITLE, KEY_DETAILS, KEY_LAST_CONNECT_DATE },
-			new int[] { R.id.server_list_item_title, R.id.server_list_item_details, R.id.server_list_item_last_connect_date }
+			new String[]{ KEY_TITLE, KEY_DETAILS, KEY_LAST_CONNECT_DATE },
+			new int[]{ R.id.server_list_item_title, R.id.server_list_item_details, R.id.server_list_item_last_connect_date }
 		);
 
 		this.setListAdapter( adapter );
@@ -58,7 +54,7 @@ public class ServerListActivity extends ListActivity
 
 	public boolean onContextItemSelected( MenuItem item )
 	{
-		boolean handled = false;
+		boolean handled;
 		if ( item.getItemId() == R.id.server_list_item_delete )
 		{
 			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
@@ -66,7 +62,9 @@ public class ServerListActivity extends ListActivity
 
 			this.dataProvider.remove( selectedItem );
 			new WifiProfileIo( this ).forget( (WifiProfile)selectedItem.get( KEY_PROFILE ) );
-			// TODO: Notify list of the update to the data provider...
+
+			// Update UI in response to the dataProvider changing...
+			getListView().invalidateViews();
 
 			handled = true;
 		}
