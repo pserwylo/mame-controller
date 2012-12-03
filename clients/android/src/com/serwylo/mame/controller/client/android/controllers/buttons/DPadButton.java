@@ -8,6 +8,11 @@ abstract public class DPadButton extends AbstractButton
 	public abstract static class Directional extends AbstractButton
 	{
 
+		/**
+		 * The middle button doesn't receive press events, it is just there for rendering purposes.
+		 */
+		public static final int DIR_MIDDLE = 0;
+
 		public static final int DIR_UP = 1;
 		public static final int DIR_RIGHT = 2;
 		public static final int DIR_DOWN = 4;
@@ -115,6 +120,14 @@ abstract public class DPadButton extends AbstractButton
 		{
 			super( DIR_DOWN_RIGHT );
 			// this.setKeyCode( KeyCodes.VK_LEFT );
+		}
+	}
+
+	public static class Middle extends Directional
+	{
+		public Middle()
+		{
+			super( DIR_MIDDLE );
 		}
 	}
 
